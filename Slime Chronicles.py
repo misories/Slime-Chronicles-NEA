@@ -73,7 +73,7 @@ def logOut():
 
 # Initialise Main Window
 root = tk.Tk()
-root.geometry("900x550")
+root.geometry("960x640")
 root.resizable(True,True)
 root.title("Slime Chronicles")
 root.grid_rowconfigure(0, weight=1)
