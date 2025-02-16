@@ -3,7 +3,7 @@ from config import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        super.__init__()
+        super.__init__(self)
 
         self.game = game
         self.layer = P_layer
@@ -21,3 +21,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+    def update(self):
+        pass
+
+    def movekeys(self):

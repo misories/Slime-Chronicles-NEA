@@ -1,4 +1,3 @@
-import pygame
 from sprites import *
 from config import *
 import sys
@@ -15,12 +14,14 @@ class Gameplay:
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
-
+        self.player = None
 
     def new(self):
         self.playing = True
         self.all_sprites.empty()
         self.blocks.empty()
+
+        self.player = Player(self,30, 20)
 
     def update(self):
 
