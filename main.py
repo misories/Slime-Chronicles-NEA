@@ -11,9 +11,16 @@ class Gameplay:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font("pokefont.ttf", 32)
         self.running = True
+        self.playing = False
+
+        self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.blocks = pygame.sprite.LayeredUpdates()
+
 
     def new(self):
         self.playing = True
+        self.all_sprites.empty()
+        self.blocks.empty()
 
     def update(self):
 
