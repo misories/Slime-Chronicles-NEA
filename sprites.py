@@ -26,3 +26,5 @@ class Player(pygame.sprite.Sprite):
         pass
 
     def movekeys(self):
+        pass
+

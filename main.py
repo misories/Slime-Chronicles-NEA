@@ -43,6 +43,7 @@ class Gameplay:
             self.events()
             self.update()
             self.draw()
+
         self.running = False
 
     def game_over(self):
@@ -53,7 +54,6 @@ class Gameplay:
 
 g = Gameplay()
 g.intro()
-g.new()
 while g.running:
     g.mainloop()
     g.game_over()
