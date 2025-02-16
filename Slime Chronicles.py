@@ -305,8 +305,3 @@ feedback_lbl2.place(x=170,y=195)
 menupage.tkraise()
 
 root.mainloop()
-
-
-
-
-kggyugtyu
