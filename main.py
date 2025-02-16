@@ -23,13 +23,39 @@ class Gameplay:
 
         self.player = Player(self,30, 20)
 
+
+    def events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.playing = False
+                self.running = False
+
     def update(self):
+        self.all_sprites.update()
 
     def draw(self):
+        self.all_sprites.draw(self.screen)
+        self.clock.tick(FPS)
+        pygame.display.update()
 
-    def main(self):
+    def mainloop(self):
+        while self.playing:
+            self.events()
+            self.update()
+            self.draw()
+        self.running = False
 
     def game_over(self):
+        pass
 
     def intro(self):
+        pass
 
+g = Gameplay()
+g.intro()
+g.new()
+while g.running:
+    g.mainloop()
+    g.game_over()
+pygame.quit()
+sys.exit()

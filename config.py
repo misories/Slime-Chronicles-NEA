@@ -5,3 +5,5 @@ P_layer = 2
 
 pixels = 32
 RED = (255,0,0)
+
+FPS = 60
