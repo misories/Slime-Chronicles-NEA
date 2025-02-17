@@ -3,13 +3,14 @@ from config import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        super.__init__(self)
+        super().__init__(game.all_sprites)
 
         self.game = game
-        self.layer = P_layer
+        self.game.all_sprites.change_layer(self, P_layer)
         self.groups = self.game.all_sprites
-        pygame.sprite.Sprite.__init__(self,self.groups)
+        pygame.sprite.Sprite.__init__(self, self.groups)
 
+        # Set Sprite to 32x32
         self.x = x * pixels
         self.y = y * pixels
         self.width = pixels
@@ -22,9 +23,28 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+        # Movement
+        self.x_change = 0
+        self.y_change = 0
+
     def update(self):
-        pass
+        self.movekeys()
+        self.rect.x += self.x_change
+        self.rect.y += self.y_change
+
+        # Reset Values
+        self.x_change = 0
+        self.y_change = 0
 
     def movekeys(self):
-        pass
 
+        # Checking Input
+        key_pressed = pygame.key.get_pressed()
+        if key_pressed[pygame.K_w] or key_pressed[pygame.K_UP]:
+            self.x_change -= speed
+        if key_pressed[pygame.K_s] or key_pressed[pygame.K_DOWN]:
+            self.x_change += speed
+        if key_pressed[pygame.K_a] or key_pressed[pygame.K_LEFT]:
+            self.y_change -= speed
+        if key_pressed[pygame.K_d] or key_pressed[pygame.K_RIGHT]:
+            self.y_change += speed

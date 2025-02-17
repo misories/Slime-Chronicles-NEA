@@ -21,7 +21,7 @@ class Gameplay:
         self.all_sprites.empty()
         self.blocks.empty()
 
-        self.player = Player(self,30, 20)
+        self.player = Player(self,1, 1)
 
 
     def events(self):
@@ -54,6 +54,7 @@ class Gameplay:
 
 g = Gameplay()
 g.intro()
+g.new()
 while g.running:
     g.mainloop()
     g.game_over()

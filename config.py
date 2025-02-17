@@ -7,3 +7,4 @@ pixels = 32
 RED = (255,0,0)
 
 FPS = 60
+speed = 3
