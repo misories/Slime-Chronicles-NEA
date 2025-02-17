@@ -65,7 +65,7 @@ class Walls(pygame.sprite.Sprite):
         self.h = pixels
 
         self.image = pygame.Surface((self.w, self.h))
-        self.image.fill(GREEN)
+        self.image.fill(BLUE)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
