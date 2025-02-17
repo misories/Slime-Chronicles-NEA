@@ -6,17 +6,17 @@ class Player(pygame.sprite.Sprite):
         super().__init__(game.all_sprites)
 
         self.game = game
-        self.game.all_sprites.change_layer(self, P_layer)
+        self._layer = P_layer
         self.groups = self.game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         # Set Sprite to 32x32
         self.x = x * pixels
         self.y = y * pixels
-        self.width = pixels
-        self.height = pixels
+        self.w = pixels
+        self.h = pixels
 
-        self.image = pygame.Surface([self.width,self.height])
+        self.image = pygame.Surface([self.w,self.h])
         self.image.fill(RED)
 
         self.rect = self.image.get_rect()
@@ -41,10 +41,30 @@ class Player(pygame.sprite.Sprite):
         # Checking Input
         key_pressed = pygame.key.get_pressed()
         if key_pressed[pygame.K_w] or key_pressed[pygame.K_UP]:
-            self.x_change -= speed
-        if key_pressed[pygame.K_s] or key_pressed[pygame.K_DOWN]:
-            self.x_change += speed
-        if key_pressed[pygame.K_a] or key_pressed[pygame.K_LEFT]:
             self.y_change -= speed
-        if key_pressed[pygame.K_d] or key_pressed[pygame.K_RIGHT]:
+        if key_pressed[pygame.K_s] or key_pressed[pygame.K_DOWN]:
             self.y_change += speed
+        if key_pressed[pygame.K_a] or key_pressed[pygame.K_LEFT]:
+            self.x_change -= speed
+        if key_pressed[pygame.K_d] or key_pressed[pygame.K_RIGHT]:
+            self.x_change += speed
+
+class Walls(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
+        self._layer = W_layer
+        self.groups = self.game.all_sprites, self.game.blocks
+        pygame.sprite.Sprite.__init__(self,self.groups)
+
+        self.x = x * pixels
+        self.y = y * pixels
+        self.w = pixels
+        self.h = pixels
+
+        self.image = pygame.Surface((self.w, self.h))
+        self.image.fill(GREEN)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y

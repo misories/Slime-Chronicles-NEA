@@ -16,6 +16,15 @@ class Gameplay:
         self.blocks = pygame.sprite.LayeredUpdates()
         self.player = None
 
+    def createwallmap(self):
+        for n, row in enumerate(wallmap):
+            for m, column in enumerate(row):
+                if column == "X":
+                    Walls(self, m, n)
+                if column == "P":
+                    Walls(self, m, n)
+
+
     def new(self):
         self.playing = True
         self.all_sprites.empty()
@@ -23,6 +32,7 @@ class Gameplay:
 
         self.player = Player(self,1, 1)
 
+        self.createwallmap()
 
     def events(self):
         for event in pygame.event.get():
@@ -34,6 +44,7 @@ class Gameplay:
         self.all_sprites.update()
 
     def draw(self):
+        self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
         self.clock.tick(FPS)
         pygame.display.update()
