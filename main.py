@@ -22,15 +22,13 @@ class Gameplay:
                 if column == "X":
                     Walls(self, m, n)
                 if column == "P":
-                    Walls(self, m, n)
+                    Player(self, m, n)
 
 
     def new(self):
         self.playing = True
         self.all_sprites.empty()
         self.blocks.empty()
-
-        self.player = Player(self,1, 1)
 
         self.createwallmap()
 
