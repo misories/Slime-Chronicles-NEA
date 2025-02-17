@@ -16,8 +16,10 @@ class Player(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
+        image_to_load = pygame.image.load("Pics/Sprite/slime.png")
         self.image = pygame.Surface([self.w,self.h])
-        self.image.fill(RED)
+        self.image.set_colorkey(BLACK)
+        self.image.blit(image_to_load,(0,0))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
