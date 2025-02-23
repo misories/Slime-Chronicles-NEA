@@ -1,8 +1,9 @@
 w = 960
 h = 640
 
-P_layer = 2
-W_layer = 1
+P_layer = 3
+W_layer = 2
+G_layer = 1
 
 pixels = 32
 RED = (255,0,0)
