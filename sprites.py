@@ -83,7 +83,7 @@ class Walls(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
-        self.image = self.game.terrain.get_one(288,216, self.w, self.h + 8)
+        self.image = self.game.terrain.get_one(544,352, self.w, self.h)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
