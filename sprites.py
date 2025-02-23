@@ -70,6 +70,9 @@ class Player(pygame.sprite.Sprite):
                 if self.y_change < 0:
                     self.rect.top = collide[0].rect.bottom
 
+    def animation(self):
+        down_ani = [self]
+
 class Walls(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
 
@@ -111,6 +114,7 @@ class Grounds(pygame.sprite.Sprite):
 class Spritesheet:
     def __init__(self,file):
         self.sheet = pygame.image.load(file).convert()
+        self.load = pygame.image.load
 
     def get_one(self, x, y, width, height):
         sprite = pygame.Surface([width, height])
