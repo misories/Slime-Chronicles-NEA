@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
-        imageload1 = pygame.image.load("Pics/Sprite/slime2.png")
+        imageload1 = pygame.image.load("Pics/Sprite/slime middle.png")
         self.image = pygame.Surface([self.w,self.h])
         self.image.set_colorkey(BLACK)
         self.image.blit(imageload1,(0,0))
@@ -58,17 +58,17 @@ class Player(pygame.sprite.Sprite):
             collide = pygame.sprite.spritecollide(self,self.game.blocks, False)
             if collide:
                 if self.x_change > 0:
-                    self.rect.x = collide[0].rect.left - self.rect.width
+                    self.rect.right = collide[0].rect.left
                 if self.x_change < 0:
-                    self.rect.x = collide[0].rect.right + self.rect.width
+                    self.rect.left = collide[0].rect.right
 
         if direction == "y":
             collide = pygame.sprite.spritecollide(self, self.game.blocks, False)
             if collide:
                 if self.y_change > 0:
-                    self.rect.y = collide[0].rect.top - self.rect.height
+                    self.rect.bottom = collide[0].rect.top
                 if self.y_change < 0:
-                    self.rect.y = collide[0].rect.bottom + self.rect.height
+                    self.rect.top = collide[0].rect.bottom
 
 class Walls(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
