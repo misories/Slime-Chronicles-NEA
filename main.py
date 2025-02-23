@@ -18,7 +18,8 @@ class Gameplay:
         self.blocks = pygame.sprite.LayeredUpdates()
         self.player = None
 
-        self.music = None
+        pygame.mixer.init()
+        self.music = pygame.mixer.music
 
     def createwallmap(self):
         for n, row in enumerate(wallmap):
@@ -27,7 +28,6 @@ class Gameplay:
                     Walls(self, m, n)
                 if column == "P":
                     Player(self, m, n)
-
 
     def new(self):
         self.playing = True
@@ -56,6 +56,7 @@ class Gameplay:
             self.events()
             self.update()
             self.draw()
+            self.playmusic()
 
         self.running = False
 
@@ -65,13 +66,13 @@ class Gameplay:
     def intro(self):
         pass
 
-    def music(self):
-        pygame.mixer.init()
-        self.music = pygame.mixer.music
-
+    def playmusic(self):
         self.music.load("heart and soul.mp3")
         self.music.play(-1)
         self.music.set_volume(1.0)
+
+        test = pygame.mixer.get_init()
+        print(test)
 
 g = Gameplay()
 g.intro()
