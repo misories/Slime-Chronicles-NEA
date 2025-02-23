@@ -26,6 +26,7 @@ class Gameplay:
     def createwallmap(self):
         for n, row in enumerate(wallmap):
             for m, column in enumerate(row):
+                Grounds(self, m, n)
                 if column == "X":
                     Walls(self, m, n)
                 if column == "P":

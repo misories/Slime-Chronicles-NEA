@@ -74,7 +74,20 @@ class Grounds(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
 
         self.game = game
+        self.layer = G_layer
+        self.groups = self.game.all_sprites
+        pygame.sprite.Sprite.__init__(self, self.groups)
 
+        self.x = x * pixels
+        self.y = y * pixels
+        self.w = pixels
+        self.h = pixels
+
+        self.image = self.game.terrain.get_one(64, 352, self.w, self.h)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
 class Spritesheet:
     def __init__(self,file):
