@@ -68,7 +68,7 @@ class Gameplay:
     def playmusic(self):
         self.music.load("heart and soul.mp3")
         self.music.play(-1)
-        self.music.set_volume(0.2)
+        self.music.set_volume(0.5)
 
 g = Gameplay()
 g.intro()
