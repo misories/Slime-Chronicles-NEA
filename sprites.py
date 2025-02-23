@@ -70,6 +70,10 @@ class Walls(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+class Grounds(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+
+        self.game = game
 
 class Spritesheet:
     def __init__(self,file):
