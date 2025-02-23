@@ -18,6 +18,8 @@ class Gameplay:
         self.blocks = pygame.sprite.LayeredUpdates()
         self.player = None
 
+        self.terrain = Spritesheet("Pics/Sprite/terrain.png")
+
         pygame.mixer.init()
         self.music = pygame.mixer.music
 

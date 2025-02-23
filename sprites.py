@@ -64,10 +64,19 @@ class Walls(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
-        imageload2 = pygame.image.load("Pics/Sprite/grass.png")
-        self.image = pygame.Surface([self.w, self.h])
-        self.image.fill(BLUE)
+        self.image = self.game.terrain.get_one()
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+
+class Spritesheet:
+    def __init__(self,file):
+        self.sheet = pygame.image.load(file).convert()
+
+    def get_one(self, x, y, width, height):
+        sprite = pygame.Surface([width, height])
+        sprite.blit(self.sheet, (0,0), (x, y, width, height))
+        sprite.set_colorkey(BLACK)
+        return sprite
