@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
-        imageload1 = pygame.image.load("Pics/Sprite/slime middle.png")
+        imageload1 = pygame.image.load("Pics/Sprite/slime.png")
         self.image = pygame.Surface([self.w,self.h])
         self.image.set_colorkey(BLACK)
         self.image.blit(imageload1,(0,0))
