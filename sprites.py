@@ -74,7 +74,7 @@ class Grounds(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
 
         self.game = game
-        self.layer = G_layer
+        self._layer = G_layer
         self.groups = self.game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
 
