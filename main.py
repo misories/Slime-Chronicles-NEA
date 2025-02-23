@@ -1,3 +1,5 @@
+import pygame.mixer
+
 from sprites import *
 from config import *
 import sys
@@ -15,6 +17,8 @@ class Gameplay:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.player = None
+
+        self.music = None
 
     def createwallmap(self):
         for n, row in enumerate(wallmap):
@@ -60,6 +64,14 @@ class Gameplay:
 
     def intro(self):
         pass
+
+    def music(self):
+        pygame.mixer.init()
+        self.music = pygame.mixer.music
+
+        self.music.load("heart and soul.mp3")
+        self.music.play(-1)
+        self.music.set_volume(1.0)
 
 g = Gameplay()
 g.intro()
