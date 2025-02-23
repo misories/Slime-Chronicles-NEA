@@ -16,10 +16,10 @@ class Player(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
-        image_to_load = pygame.image.load("Pics/Sprite/slime.png")
+        imageload1 = pygame.image.load("Pics/Sprite/slime.png")
         self.image = pygame.Surface([self.w,self.h])
         self.image.set_colorkey(BLACK)
-        self.image.blit(image_to_load,(0,0))
+        self.image.blit(imageload1,(0,0))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -64,7 +64,8 @@ class Walls(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
-        self.image = pygame.Surface((self.w, self.h))
+        imageload2 = pygame.image.load("Pics/Sprite/grass.png")
+        self.image = pygame.Surface([self.w, self.h])
         self.image.fill(BLUE)
 
         self.rect = self.image.get_rect()
