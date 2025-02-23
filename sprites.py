@@ -32,7 +32,9 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.movekeys()
         self.rect.x += self.x_change
+        self.collision("x")
         self.rect.y += self.y_change
+        self.collision("y")
 
         # Reset Values
         self.x_change = 0
@@ -50,6 +52,23 @@ class Player(pygame.sprite.Sprite):
             self.x_change -= speed
         if key_pressed[pygame.K_d] or key_pressed[pygame.K_RIGHT]:
             self.x_change += speed
+
+    def collision(self, direction):
+        if direction == "x":
+            collide = pygame.sprite.spritecollide(self,self.game.blocks, False)
+            if collide:
+                if self.x_change > 0:
+                    self.rect.x = collide[0].rect.left - self.rect.width
+                if self.x_change < 0:
+                    self.rect.x = collide[0].rect.right + self.rect.width
+
+        if direction == "y":
+            collide = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            if collide:
+                if self.y_change > 0:
+                    self.rect.y = collide[0].rect.top - self.rect.height
+                if self.y_change < 0:
+                    self.rect.y = collide[0].rect.bottom + self.rect.height
 
 class Walls(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
