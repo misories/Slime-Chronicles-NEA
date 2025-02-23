@@ -56,7 +56,6 @@ class Gameplay:
             self.events()
             self.update()
             self.draw()
-            self.music()
 
         self.running = False
 

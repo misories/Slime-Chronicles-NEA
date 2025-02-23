@@ -11,7 +11,7 @@ GREEN = (0,255,0)
 BLUE = (0,0,255)
 
 FPS = 60
-speed = 3
+speed = 2
 
 wallmap = [
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
