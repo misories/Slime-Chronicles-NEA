@@ -56,7 +56,6 @@ class Gameplay:
             self.events()
             self.update()
             self.draw()
-            self.playmusic()
 
         self.running = False
 
@@ -69,14 +68,12 @@ class Gameplay:
     def playmusic(self):
         self.music.load("heart and soul.mp3")
         self.music.play(-1)
-        self.music.set_volume(1.0)
-
-        test = pygame.mixer.get_init()
-        print(test)
+        self.music.set_volume(0.2)
 
 g = Gameplay()
 g.intro()
 g.new()
+g.playmusic()
 while g.running:
     g.mainloop()
     g.game_over()
