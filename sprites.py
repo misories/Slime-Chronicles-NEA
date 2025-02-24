@@ -16,10 +16,11 @@ class Player(pygame.sprite.Sprite):
         self.w = pixels
         self.h = pixels
 
-        imageload1 = pygame.image.load("Pics/Sprite/slime2.png")
+        self.load = pygame.image.load
+        self.load("Pics/Sprite/slime2.png")
         self.image = pygame.Surface([self.w,self.h])
         self.image.set_colorkey(BLACK)
-        self.image.blit(imageload1,(0,0))
+        self.image.blit(self.load,(0,0))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -28,6 +29,7 @@ class Player(pygame.sprite.Sprite):
         # Movement
         self.x_change = 0
         self.y_change = 0
+        self.facing = "down"
 
     def update(self):
         self.movekeys()
@@ -71,7 +73,11 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = collide[0].rect.bottom
 
     def animation(self):
-        down_ani = [self]
+        right_ani = [self.load("Pics/Sprite/slime2right1.png"),
+                    self.load("Pics/Sprite/slime2right2.png")]
+
+        if self.facing == "down":
+            self.image =
 
 class Walls(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -114,10 +120,9 @@ class Grounds(pygame.sprite.Sprite):
 class Spritesheet:
     def __init__(self,file):
         self.sheet = pygame.image.load(file).convert()
-        self.load = pygame.image.load
 
     def get_one(self, x, y, width, height):
-        sprite = pygame.Surface([width, height])
-        sprite.blit(self.sheet, (0,0), (x, y, width, height))
-        sprite.set_colorkey(BLACK)
-        return sprite
+        terrain = pygame.Surface([width, height])
+        terrain.blit(self.sheet, (0,0), (x, y, width, height))
+        terrain.set_colorkey(BLACK)
+        return terrain
