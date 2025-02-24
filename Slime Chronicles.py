@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import *
 import sqlite3
 
+from main import *
+
 # Sqlite Database and the pointer
 connect = sqlite3.connect("Accounts.DB")
 pointer = connect.cursor()
@@ -192,6 +194,17 @@ gname2.place(x=40,y=250)
 playbtn = menuButton(
     titlepage, text="Play", width=13, height=1)
 playbtn.place(x=95,y=340)
+
+def start():
+    g = Gameplay()
+    g.intro()
+    g.new()
+    g.playmusic()
+    while g.running:
+        g.mainloop()
+        g.game_over()
+    pygame.quit()
+    sys.exit()
 
 settingbtn = menuButton(
     titlepage, text="Settings", width=13, height=1)

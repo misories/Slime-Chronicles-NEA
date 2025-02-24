@@ -69,7 +69,7 @@ class Player(pygame.sprite.Sprite):
 
     def movekeys(self):
 
-        # Checking Input
+        # Checking Input and Moving
         key_pressed = pygame.key.get_pressed()
         if key_pressed[pygame.K_w] or key_pressed[pygame.K_UP]:
             self.y_change -= speed

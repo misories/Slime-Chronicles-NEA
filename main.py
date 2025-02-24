@@ -17,6 +17,7 @@ class Gameplay:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.player = None
+        self.npc = None
 
         self.terrain = Spritesheet("Pics/Sprite/terrain.png")
 
@@ -30,9 +31,9 @@ class Gameplay:
                 if column == "X":
                     Walls(self, m, n)
                 if column == "P":
-                    Player(self, m, n)
+                    self.player = Player(self, m, n)
                 if column == "N":
-                    NPC(self, m, n)
+                    self.npc = NPC(self, m, n)
 
     def new(self):
         self.playing = True
@@ -46,6 +47,10 @@ class Gameplay:
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_e:
+                    if self.player.rect.colliderect(self.npc.rect):
+                        self.npc.interact()
 
     def update(self):
         self.all_sprites.update()
