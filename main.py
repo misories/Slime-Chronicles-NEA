@@ -30,7 +30,8 @@ class Gameplay:
                 if column == "X":
                     Walls(self, m, n)
                 if column == "P":
-                    Player(self, m, n)
+                    self.player = Player(self,m,n)
+                    self.all_sprites.add(self.player)
 
     def new(self):
         self.playing = True
@@ -49,6 +50,8 @@ class Gameplay:
         self.all_sprites.update()
 
     def draw(self):
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, (sprite.rect.x + self.player.camx,sprite.rect.y + self.player.camy))
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
         self.clock.tick(FPS)
