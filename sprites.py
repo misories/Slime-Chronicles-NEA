@@ -151,6 +151,8 @@ class Player(pygame.sprite.Sprite):
                 if self.ani_loop >= len(down_ani):
                     self.ani_loop = 1
 
+
+
 class Walls(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
 
