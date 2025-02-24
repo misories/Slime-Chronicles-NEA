@@ -26,7 +26,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-        self.rect.center = (self.w // 2, self.h // 2)
 
         # Movement
         self.x_change = 0
@@ -59,12 +58,10 @@ class Player(pygame.sprite.Sprite):
         self.movekeys()
         self.animation()
 
-        for sprite in self.game.all_sprites:
-            if sprite != self:
-                self.rect.x += self.x_change
-                self.collision("x")
-                self.rect.y += self.y_change
-                self.collision("y")
+        self.rect.x += self.x_change
+        self.collision("x")
+        self.rect.y += self.y_change
+        self.collision("y")
 
         # Reset Values
         self.x_change = 0
@@ -75,19 +72,19 @@ class Player(pygame.sprite.Sprite):
         # Checking Input
         key_pressed = pygame.key.get_pressed()
         if key_pressed[pygame.K_w] or key_pressed[pygame.K_UP]:
-            self.camy -= speed
+            self.y_change -= speed
             self.facing = "up"
 
         if key_pressed[pygame.K_s] or key_pressed[pygame.K_DOWN]:
-            self.camy += speed
+            self.y_change += speed
             self.facing = "down"
 
         if key_pressed[pygame.K_a] or key_pressed[pygame.K_LEFT]:
-            self.camx -= speed
+            self.x_change -= speed
             self.facing = "left"
 
         if key_pressed[pygame.K_d] or key_pressed[pygame.K_RIGHT]:
-            self.camx += speed
+            self.x_change += speed
             self.facing = "right"
 
     def collision(self, direction):
