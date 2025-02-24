@@ -79,13 +79,3 @@ class Gameplay:
         self.music.load("heart and soul.mp3")
         self.music.play(-1)
         self.music.set_volume(0.5)
-
-g = Gameplay()
-g.intro()
-g.new()
-g.playmusic()
-while g.running:
-    g.mainloop()
-    g.game_over()
-pygame.quit()
-sys.exit()

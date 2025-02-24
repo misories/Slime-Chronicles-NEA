@@ -191,11 +191,8 @@ gname2 = Label(
     titlepage, text="Slime Chronicles", font=("Cascadia Mono SemiBold",19), background="khaki2")
 gname2.place(x=40,y=250)
 
-playbtn = menuButton(
-    titlepage, text="Play", width=13, height=1)
-playbtn.place(x=95,y=340)
-
 def start():
+    root.destroy()
     g = Gameplay()
     g.intro()
     g.new()
@@ -205,6 +202,11 @@ def start():
         g.game_over()
     pygame.quit()
     sys.exit()
+
+
+playbtn = menuButton(
+    titlepage, text="Play", width=13, height=1, command=start)
+playbtn.place(x=95,y=340)
 
 settingbtn = menuButton(
     titlepage, text="Settings", width=13, height=1)
