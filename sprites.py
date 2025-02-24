@@ -200,3 +200,27 @@ class Spritesheet:
         terrain.blit(self.sheet, (0,0), (x, y, width, height))
         terrain.set_colorkey(BLACK)
         return terrain
+
+class NPC(pygame.sprite.Sprite):
+    def __init__(self,game, x, y):
+        super().__init__(game.all_sprites)
+
+        self.game = game
+        self._layer = P_layer
+        self.groups = self.game.all_sprites
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        # Set Sprite to 32x32
+        self.x = x * pixels
+        self.y = y * pixels
+        self.w = pixels
+        self.h = pixels
+
+        self.load = pygame.image.load
+        self.down1 = self.load("Pics/Sprite/slime.png")
+        self.image = pygame.Surface([self.w, self.h])
+        self.image.blit(self.down1, (0, 0))
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
