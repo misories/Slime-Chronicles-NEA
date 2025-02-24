@@ -18,10 +18,10 @@ class Player(pygame.sprite.Sprite):
         self.h = pixels
 
         self.load = pygame.image.load
-        Psprite = self.load("Pics/Sprite/slime2.png")
+        self.down1 = self.load("Pics/Sprite/slime2.png")
         self.image = pygame.Surface([self.w,self.h])
         self.image.set_colorkey(BLACK)
-        self.image.blit(Psprite,(0,0))
+        self.image.blit(self.down1,(0,0))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -37,6 +37,20 @@ class Player(pygame.sprite.Sprite):
         self.right1 = self.load("Pics/Sprite/slime2right1.png")
         self.right2 = self.load("Pics/Sprite/slime2right2.png")
         self.right3 = self.load("Pics/Sprite/slime2right3.png")
+
+        # Left Animation
+        self.left1 = self.load("Pics/Sprite/slime2left1.png")
+        self.left2 = self.load("Pics/Sprite/slime2left2.png")
+        self.left3 = self.load("Pics/Sprite/slime2left3.png")
+
+        # Up Animation
+        self.up1 = self.load("Pics/Sprite/slime2up1.png")
+        self.up2 = self.load("Pics/Sprite/slime2up2.png")
+        self.up3 = self.load("Pics/Sprite/slime2up3.png")
+
+        # Down Animation
+        self.down2 = self.load("Pics/Sprite/slime2down2.png")
+        self.down3 = self.load("Pics/Sprite/slime2down3.png")
 
     def update(self):
         self.movekeys()
@@ -89,6 +103,15 @@ class Player(pygame.sprite.Sprite):
         right_ani = [self.right1,
                      self.right2,
                      self.right3]
+        left_ani = [self.left1,
+                    self.left2,
+                    self.left3]
+        up_ani = [self.up1,
+                  self.up2,
+                  self.up3]
+        down_ani = [self.down1,
+                    self.down2,
+                    self.down3]
 
         if self.facing == "right":
             if self.x_change == 0:
@@ -97,6 +120,30 @@ class Player(pygame.sprite.Sprite):
                 self.image = right_ani[math.floor(self.ani_loop)]
                 self.ani_loop += 0.1
                 if self.ani_loop >= len(right_ani):
+                    self.ani_loop = 1
+        if self.facing == "left":
+            if self.x_change == 0:
+                self.image = self.left1
+            else:
+                self.image = left_ani[math.floor(self.ani_loop)]
+                self.ani_loop += 0.1
+                if self.ani_loop >= len(left_ani):
+                    self.ani_loop = 1
+        if self.facing == "up":
+            if self.y_change == 0:
+                self.image = self.up1
+            else:
+                self.image = up_ani[math.floor(self.ani_loop)]
+                self.ani_loop += 0.1
+                if self.ani_loop >= len(up_ani):
+                    self.ani_loop = 1
+        if self.facing == "down":
+            if self.y_change == 0:
+                self.image = self.down1
+            else:
+                self.image = down_ani[math.floor(self.ani_loop)]
+                self.ani_loop += 0.1
+                if self.ani_loop >= len(down_ani):
                     self.ani_loop = 1
 
 class Walls(pygame.sprite.Sprite):
