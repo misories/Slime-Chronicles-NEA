@@ -219,8 +219,12 @@ class NPC(pygame.sprite.Sprite):
         self.load = pygame.image.load
         self.down1 = self.load("Pics/Sprite/slime.png")
         self.image = pygame.Surface([self.w, self.h])
+        self.image.set_colorkey(BLACK)
         self.image.blit(self.down1, (0, 0))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+    def interact(self):
+        print("NPC: Hello, Fellow Slime")

@@ -31,6 +31,8 @@ class Gameplay:
                     Walls(self, m, n)
                 if column == "P":
                     Player(self, m, n)
+                if column == "N":
+                    NPC(self, m, n)
 
     def new(self):
         self.playing = True
