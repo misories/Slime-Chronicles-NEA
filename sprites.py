@@ -1,5 +1,6 @@
 import pygame
 from config import *
+import math
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -17,10 +18,10 @@ class Player(pygame.sprite.Sprite):
         self.h = pixels
 
         self.load = pygame.image.load
-        self.load("Pics/Sprite/slime2.png")
+        Psprite = self.load("Pics/Sprite/slime2.png")
         self.image = pygame.Surface([self.w,self.h])
         self.image.set_colorkey(BLACK)
-        self.image.blit(self.load,(0,0))
+        self.image.blit(Psprite,(0,0))
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -30,9 +31,17 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
         self.facing = "down"
+        self.ani_loop = 1
+
+        # Right Animation
+        self.right1 = self.load("Pics/Sprite/slime2right1.png")
+        self.right2 = self.load("Pics/Sprite/slime2right2.png")
+        self.right3 = self.load("Pics/Sprite/slime2right3.png")
 
     def update(self):
         self.movekeys()
+        self.animation()
+
         self.rect.x += self.x_change
         self.collision("x")
         self.rect.y += self.y_change
@@ -48,12 +57,16 @@ class Player(pygame.sprite.Sprite):
         key_pressed = pygame.key.get_pressed()
         if key_pressed[pygame.K_w] or key_pressed[pygame.K_UP]:
             self.y_change -= speed
+            self.facing = "up"
         if key_pressed[pygame.K_s] or key_pressed[pygame.K_DOWN]:
             self.y_change += speed
+            self.facing = "down"
         if key_pressed[pygame.K_a] or key_pressed[pygame.K_LEFT]:
             self.x_change -= speed
+            self.facing = "left"
         if key_pressed[pygame.K_d] or key_pressed[pygame.K_RIGHT]:
             self.x_change += speed
+            self.facing = "right"
 
     def collision(self, direction):
         if direction == "x":
@@ -73,11 +86,18 @@ class Player(pygame.sprite.Sprite):
                     self.rect.top = collide[0].rect.bottom
 
     def animation(self):
-        right_ani = [self.load("Pics/Sprite/slime2right1.png"),
-                    self.load("Pics/Sprite/slime2right2.png")]
+        right_ani = [self.right1,
+                     self.right2,
+                     self.right3]
 
-        if self.facing == "down":
-            self.image =
+        if self.facing == "right":
+            if self.x_change == 0:
+                self.image = self.right1
+            else:
+                self.image = right_ani[math.floor(self.ani_loop)]
+                self.ani_loop += 0.1
+                if self.ani_loop >= len(right_ani):
+                    self.ani_loop = 1
 
 class Walls(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
