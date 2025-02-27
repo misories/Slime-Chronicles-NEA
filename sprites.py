@@ -227,4 +227,4 @@ class NPC(pygame.sprite.Sprite):
         self.rect.y = self.y
 
     def interact(self):
-        print("NPC: Hello, Fellow Slime")
+        print("jus slime me")
