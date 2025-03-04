@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.load = pygame.image.load
         self.down1 = self.load("Pics/Sprite/slime2.png")
         self.image = pygame.Surface([self.w,self.h])
+        self.down1.pygame.transform.scale(self.down1, (16,16))
         self.image.set_colorkey(BLACK)
         self.image.blit(self.down1,(0,0))
 
@@ -196,10 +197,10 @@ class Spritesheet:
         self.sheet = pygame.image.load(file).convert()
 
     def get_one(self, x, y, width, height):
-        terrain = pygame.Surface([width, height])
-        terrain.blit(self.sheet, (0,0), (x, y, width, height))
-        terrain.set_colorkey(BLACK)
-        return terrain
+        image = pygame.Surface([width, height])
+        image.blit(self.sheet, (0,0), (x, y, width, height))
+        image.set_colorkey(BLACK)
+        return image
 
 class NPC(pygame.sprite.Sprite):
     def __init__(self,game, x, y):
@@ -228,3 +229,24 @@ class NPC(pygame.sprite.Sprite):
 
     def interact(self):
         print("jus slime me")
+
+class Camera:
+    def __init__(self, width, height, start_x, start_y):
+        self.camera = pygame.Rect(start_x, start_y, w, h)
+        self.w = width
+        self.h = height
+        self.x = start_x
+        self.y = start_y
+
+    def update(self, target):
+        self.x = -target.rect.x + (self.w // 2)
+        self.y = -target.rect.y + (self.h // 2)
+
+        self.x = max(-(self.w - 960), min(0, self.x))
+        self.y = max(-(self.h - 640), min(0, self.y))
+        self.camera = pygame.Rect(self.x, self.y, w, h)
+
+    def apply(self, entity):
+        offset_x = -self.camera.topleft[0]
+        offset_y = -self.camera.topleft[1]
+        return entity.rect.move(-offset_x, -offset_y)

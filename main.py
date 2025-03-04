@@ -1,8 +1,10 @@
 import pygame.mixer
+from requests.utils import select_proxy
 
 from sprites import *
 from config import *
 import sys
+from groups import *
 
 
 class Gameplay:
@@ -18,6 +20,7 @@ class Gameplay:
         self.blocks = pygame.sprite.LayeredUpdates()
         self.player = None
         self.npc = None
+        self.camera = None
 
         self.terrain = Spritesheet("Pics/Sprite/terrain.png")
 
@@ -41,6 +44,8 @@ class Gameplay:
         self.blocks.empty()
 
         self.createwallmap()
+        print(f"player: {self.player.rect.x}, {self.player.rect.y}")
+        self.camera = Camera(world_w, world_h, self.player.rect.x, self.player.rect.y)
 
     def events(self):
         for event in pygame.event.get():
@@ -54,12 +59,14 @@ class Gameplay:
 
     def update(self):
         self.all_sprites.update()
+        self.camera.update(self.player)
 
     def draw(self):
         self.screen.fill(BLACK)
-        self.all_sprites.draw(self.screen)
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
         self.clock.tick(FPS)
-        pygame.display.update()
+        pygame.display.flip()
 
     def mainloop(self):
         while self.playing:
