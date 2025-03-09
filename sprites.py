@@ -230,6 +230,7 @@ class NPC(pygame.sprite.Sprite):
 
         self.load = pygame.image.load
         self.npc = self.load("Pics/Sprite/slime.png")
+        self.npc = pygame.transform.scale(self.npc, (28,28))
         self.image = pygame.Surface([self.w, self.h])
         self.image.set_colorkey(BLACK)
         self.image.blit(self.npc, (0, 0))
