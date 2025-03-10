@@ -10,7 +10,7 @@ from groups import *
 class Gameplay:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((w, h))
+        self.screen = pygame.display.set_mode((w, h), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font("pokefont.ttf", 32)
         self.running = True
