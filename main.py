@@ -11,6 +11,7 @@ class Gameplay:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((w, h), pygame.RESIZABLE)
+        pygame.display.set_caption("Slime Chronicles")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font("pokefont.ttf", 32)
         self.running = True
@@ -21,6 +22,7 @@ class Gameplay:
         self.player = None
         self.npc = None
         self.camera = None
+        self.menu = MenuFrame(self)
 
         self.terrain = Spritesheet("Pics/Sprite/terrain.png")
 
@@ -52,10 +54,13 @@ class Gameplay:
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
                     if self.player.rect.colliderect(self.npc.rect):
                         self.npc.interact()
+        if self.menu.pause:
+            self.menu = MenuFrame(self, 0,0)
 
     def update(self):
         self.all_sprites.update()

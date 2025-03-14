@@ -263,3 +263,31 @@ class Camera:
         offset_x = -self.camera.topleft[0]
         offset_y = -self.camera.topleft[1]
         return entity.rect.move(-offset_x, -offset_y)
+
+class MenuFrame:
+    def __init__(self, game, x, y):
+        self.game = game
+        self.load = pygame.image.load
+        self._layer = P_layer
+
+        self.x = x * pixels
+        self.y = y * pixels
+        self.w = pixels
+        self.h = pixels
+
+        self.title = self.load("Pics/Sprite/menutitle.png")
+        self.image = pygame.Surface([self.w, self.h])
+        self.title = pygame.scale.tranform((128,96))
+
+        self.image.set_colorkey(BLACK)
+        self.image.blit(self.title, (0,0))
+
+        self.pause = False
+
+    def pop(self):
+        key_pressed = pygame.key.get_pressed()
+        if key_pressed[pygame.K_ESCAPE] and not self.pause:
+            self.pause = True
+        if key_pressed[pygame.K_ESCAPE] and self.pause:
+            self.pause = False
+        return self.pause
