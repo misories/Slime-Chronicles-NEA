@@ -225,7 +225,7 @@ account_lbl.place(x=95,y=300)
 # Title/Play Screen
 gname2 = Label(
     titlepage, text="Slime Chronicles", font=("Cascadia Mono SemiBold",19), background="khaki2")
-gname2.place(x=40,y=250)
+gname2.place(x=40,y=220)
 
 def start():
     root.destroy()
@@ -242,23 +242,23 @@ def start():
 
 playbtn = menuButton(
     titlepage, text="Play", width=13, height=1, command=start)
-playbtn.place(x=95,y=340)
+playbtn.place(x=95,y=310)
 
 settingbtn = menuButton(
     titlepage, text="Settings", width=13, height=1)
-settingbtn.place(x=95,y=395)
+settingbtn.place(x=95,y=365)
 
 logoutbtn = menuButton(
     titlepage, text="Log Out", width=13, height=1, command=logOut)
-logoutbtn.place(x=95,y=450)
+logoutbtn.place(x=95,y=420)
 
 qbtn = quitButton(
     titlepage, text="Quit", width=13, height=1)
-qbtn.place(x=95,y=505)
+qbtn.place(x=95,y=475)
 
 account_lbl = Label(
     titlepage, textvariable=logged_account, font=("Arial",11), background="khaki")
-account_lbl.place(x=95,y=300)
+account_lbl.place(x=95,y=270)
 
 # Adding Text / Entry Boxes For Login Page
 logtitle = Label(
