@@ -1,4 +1,4 @@
 # Test fot Int
 
-value = int(input())
+value = input("eee")
 print(len(str(value)))

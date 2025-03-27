@@ -7,21 +7,21 @@ import sqlite3
 from sprites import Spritesheet
 
 # Sqlite Database and the pointer
-connect = sqlite3.connect("Accounts.DB")
+connect = sqlite3.connect("Logins.DB")
 pointer = connect.cursor()
 
 # Creating the Table
 create_db = """
     CREATE TABLE IF NOT EXISTS
-    accounts(username TEXT, password TEXT, pin TEXT)
+    logins(username TEXT, password TEXT, pin TEXT)
 """
 pointer.execute(create_db)
 
-pointer.execute("SELECT * FROM accounts")
+pointer.execute("SELECT * FROM logins")
 all_accounts = pointer.fetchall()
 
 def validateLog():
-    pointer.execute("SELECT * FROM accounts")
+    pointer.execute("SELECT * FROM logins")
     all_accounts = pointer.fetchall()
     global logged_account
     for all_accounts in all_accounts:
@@ -54,7 +54,7 @@ def registerUser():
         return
 
     pin = pin_entry.get()
-    if len(str(pin_entry)) != 4:
+    if len(str(pin)) != 4:
         feedback_lbl2.config(text="Invalid, Pin MUST be 4 digits", fg="firebrick1")
         return
     try:
@@ -63,12 +63,12 @@ def registerUser():
         feedback_lbl2.config(text="Invalid Pin, must be 4 numerical values", fg="firebrick1")
         return
 
-    pointer.execute("SELECT * FROM accounts WHERE username=?", (user,))
+    pointer.execute("SELECT * FROM logins WHERE username=?", (user,))
     if pointer.fetchone():
         feedback_lbl2.config(text="Username already exists.", fg="firebrick1")
         return
 
-    pointer.execute("INSERT INTO accounts (username, password, pin) VALUES (?, ?, ?)", (user, pass2, pin))
+    pointer.execute("INSERT INTO logins (username, password, pin) VALUES (?, ?, ?)", (user, pass2, pin))
     connect.commit()
     reguser_entry.bind("<FocusIn>", usernameClick)
     reguser_entry.bind("<FocusOut>", usernameDefault)
@@ -77,6 +77,9 @@ def registerUser():
     regpass_entry2.bind("<FocusIn>", regpasswordClick2)
     regpass_entry2.bind("<FocusOut>", regpasswordDefault2)
     loginpage.tkraise()
+
+def changePass():
+    pass
 
 def logOut():
     logged_account = None
