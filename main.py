@@ -22,7 +22,8 @@ class Gameplay:
         self.player = None
         self.npc = None
         self.camera = None
-        self.menu = MenuFrame(self)
+
+        self.pause = False
 
         self.terrain = Spritesheet("Pics/Sprite/terrain.png")
 
@@ -56,11 +57,16 @@ class Gameplay:
                 self.running = False
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
+                if event.key == pygame.K_ESCAPE:
+                    self.pause = not self.pause
+                    print("pressed")
+                    if self.pause:
+                        print("T")
+                    if not self.pause:
+                        print("F")
+                if event.key == pygame.K_e and not self.pause:
                     if self.player.rect.colliderect(self.npc.rect):
                         self.npc.interact()
-        if self.menu.pause:
-            self.menu = MenuFrame(self, 0,0)
 
     def update(self):
         self.all_sprites.update()
@@ -70,6 +76,9 @@ class Gameplay:
         self.screen.fill(BLACK)
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+        if self.pause:
+            menu_frame = MenuFrame(self, 0, 0)
+            self.screen.blit(menu_frame.image, (0,0))
         self.clock.tick(FPS)
         pygame.display.flip()
 

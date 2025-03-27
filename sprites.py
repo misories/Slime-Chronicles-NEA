@@ -272,22 +272,12 @@ class MenuFrame:
 
         self.x = x * pixels
         self.y = y * pixels
-        self.w = pixels
-        self.h = pixels
 
-        self.title = self.load("Pics/Sprite/menutitle.png")
-        self.image = pygame.Surface([self.w, self.h])
-        self.title = pygame.scale.tranform((128,96))
 
-        self.image.set_colorkey(BLACK)
-        self.image.blit(self.title, (0,0))
+        self.frame = self.load("Pics/Sprite/menuframe.png")
+        self.frame = pygame.transform.scale(self.frame, (360,200))
+        self.frame.set_colorkey(BLACK, pygame.RLEACCEL)
+        self.frame.blit(self.frame, (0,0))
 
         self.pause = False
 
-    def pop(self):
-        key_pressed = pygame.key.get_pressed()
-        if key_pressed[pygame.K_ESCAPE] and not self.pause:
-            self.pause = True
-        if key_pressed[pygame.K_ESCAPE] and self.pause:
-            self.pause = False
-        return self.pause

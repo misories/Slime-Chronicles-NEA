@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import *
 import sqlite3
 
-from main import *
+from sprites import Spritesheet
 
 # Sqlite Database and the pointer
 connect = sqlite3.connect("Accounts.DB")
@@ -75,12 +75,10 @@ def logOut():
 
 # Initialise Main Window
 root = tk.Tk()
-root.geometry("960x640")
-root.resizable(True,True)
+root.geometry("960x520")
 root.title("Slime Chronicles")
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
-
 
 # Creating Frames for the Title/Login/Register Screen
 
@@ -94,6 +92,12 @@ loginpage.grid(row=0,column=0, sticky='nsew')
 registerpage.grid(row=0,column=0, sticky='nsew')
 titlepage.grid(row=0,column=0, sticky='nsew')
 
+# Background
+image = PhotoImage(file= "Pics/background.png")
+background_label = Label(menupage, image=image)
+background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+buttonimg = PhotoImage(file= "Pics/Sprite/btn.png")
 
 # Button Class + Functions
 class menuButton(Button):
