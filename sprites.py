@@ -9,6 +9,7 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self._layer = P_layer
         self.groups = self.game.all_sprites
+        self.stop = False
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         # Set Sprite to 32x32
@@ -66,15 +67,22 @@ class Player(pygame.sprite.Sprite):
         self.down2 = pygame.transform.scale(self.down2, (28, 28))
         self.down3 = pygame.transform.scale(self.down3, (28, 28))
 
+    def checkForStop(self):
+        key_press = pygame.key.get_pressed()
+        if key_press[pygame.K_ESCAPE]:
+            self.stop = not self.stop
     def update(self):
-        self.movekeys()
-        self.animation()
+        self.checkForStop()
+        if not self.stop:
+            self.movekeys()
+            self.animation()
 
-        self.rect.x += self.x_change
-        self.collision("x")
-        self.rect.y += self.y_change
-        self.collision("y")
-
+            self.rect.x += self.x_change
+            self.collision("x")
+            self.rect.y += self.y_change
+            self.collision("y")
+        if self.stop:
+            pass
         # Reset Values
         self.x_change = 0
         self.y_change = 0

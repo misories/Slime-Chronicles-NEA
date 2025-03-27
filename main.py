@@ -62,11 +62,16 @@ class Gameplay:
                     print("pressed")
                     if self.pause:
                         print("T")
+                        if event.key == pygame.K_e:
+                            pass
                     if not self.pause:
                         print("F")
-                if event.key == pygame.K_e and not self.pause:
-                    if self.player.rect.colliderect(self.npc.rect):
-                        self.npc.interact()
+                        if event.key == pygame.K_e:
+                            if self.player.rect.colliderect(self.npc.rect):
+                                self.npc.interact()
+                        if event.key == pygame.K_e:
+                            pass
+
 
     def update(self):
         self.all_sprites.update()
