@@ -274,10 +274,19 @@ class MenuFrame:
         self.y = y * pixels
 
 
-        self.frame = self.load("Pics/Sprite/menuframe.png")
-        self.frame = pygame.transform.scale(self.frame, (360,200))
-        self.frame.set_colorkey(BLACK, pygame.RLEACCEL)
-        self.frame.blit(self.frame, (0,0))
+        self.frame = self.load("Pics/slab.png").convert_alpha()
+        self.image = pygame.Surface([422, 783])
+        self.frame = pygame.transform.scale(self.frame, (211,391))
+
+        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
+        self.image.blit(self.frame, (0,0))
 
         self.pause = False
 
+        # Menu Buttons
+
+        self.b1 = self.load("Pics/menubtn.png").convert_alpha()
+        self.bimg1 = pygame.Surface([780,228])
+        self.b1 = pygame.transform.scale(self.b1, (195, 57))
+        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
+        self.image.blit(self.b1, (7,20))

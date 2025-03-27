@@ -13,7 +13,7 @@ pointer = connect.cursor()
 # Creating the Table
 create_db = """
     CREATE TABLE IF NOT EXISTS
-    accounts(username TEXT, password TEXT)
+    accounts(username TEXT, password TEXT, pin TEXT)
 """
 pointer.execute(create_db)
 
@@ -53,12 +53,22 @@ def registerUser():
         feedback_lbl2.config(text="Password must be between 8 and 16 characters.", fg="firebrick1")
         return
 
+    pin = pin_entry.get()
+    if len(str(pin_entry)) != 4:
+        feedback_lbl2.config(text="Invalid, Pin MUST be 4 digits", fg="firebrick1")
+        return
+    try:
+        pin = int(pin)
+    except ValueError:
+        feedback_lbl2.config(text="Invalid Pin, must be 4 numerical values", fg="firebrick1")
+        return
+
     pointer.execute("SELECT * FROM accounts WHERE username=?", (user,))
     if pointer.fetchone():
         feedback_lbl2.config(text="Username already exists.", fg="firebrick1")
         return
 
-    pointer.execute("INSERT INTO accounts (username, password) VALUES (?, ?)", (user, pass2))
+    pointer.execute("INSERT INTO accounts (username, password, pin) VALUES (?, ?, ?)", (user, pass2, pin))
     connect.commit()
     reguser_entry.bind("<FocusIn>", usernameClick)
     reguser_entry.bind("<FocusOut>", usernameDefault)
@@ -94,8 +104,17 @@ titlepage.grid(row=0,column=0, sticky='nsew')
 
 # Background
 image = PhotoImage(file= "Pics/background.png")
-background_label = Label(menupage, image=image)
-background_label.place(x=0, y=0, relwidth=1, relheight=1)
+bg_lbl = Label(menupage, image=image)
+bg_lbl.place(x=0, y=0, relwidth=1, relheight=1)
+
+bg_lbl = Label(loginpage, image=image)
+bg_lbl.place(x=0, y=0, relwidth=1, relheight=1)
+
+bg_lbl = Label(registerpage, image=image)
+bg_lbl.place(x=0, y=0, relwidth=1, relheight=1)
+
+bg_lbl = Label(titlepage, image=image)
+bg_lbl.place(x=0, y=0, relwidth=1, relheight=1)
 
 buttonimg = PhotoImage(file= "Pics/Sprite/btn.png")
 
@@ -104,7 +123,7 @@ class menuButton(Button):
     def __init__(self, frame, **kwargs):
         super().__init__(frame, **kwargs)
         self.config(
-            relief=tk.FLAT, bd=0, pady=0, font=("Arial", 13), background="khaki")
+            relief=tk.FLAT, bd=0, pady=0, font=("pokefont.ttf", 13), background="khaki")
         self.bind("<Enter>", self.hover)
         self.bind("<Leave>", self.default)
     def hover(self,event):
@@ -164,6 +183,16 @@ def regpasswordDefault2(event):
     if regpass_entry2.get() == "":
         regpass_entry2.insert(0, "Confirm Password...")
         regpass_entry2.config(show="")
+
+def pinDefault(event):
+    if pin_entry.get() == "":
+        pin_entry.insert(0, "Enter Pin...")
+        pin_entry.config(show="")
+
+def pinClick(event):
+    if pin_entry.get() == "Enter Pin...":
+        pin_entry.delete(0, tk.END)
+        pin_entry.config(show="")
 
 # Adding Text / Buttons For Menu Page
 gname1 = Label(
@@ -228,9 +257,6 @@ account_lbl = Label(
     titlepage, textvariable=logged_account, font=("Arial",11), background="khaki")
 account_lbl.place(x=95,y=300)
 
-# Settings Mini Frame
-
-
 # Adding Text / Entry Boxes For Login Page
 logtitle = Label(
     loginpage, text="Login", font=("Cascadia Mono SemiBold",19), background="khaki2")
@@ -270,13 +296,15 @@ feedback_lbl1 = Label(
     loginpage, text="", font=("Cascadia Mono SemiBold",9), background="khaki")
 feedback_lbl1.place(x=170,y=210)
 
+forgot_lbl = menuButton
+
 # Register Screen
 registertitle = Label(
     registerpage, text="Registration", font=("Cascadia Mono SemiBold",19), background="khaki2")
 registertitle.place(x=40,y=135)
 
 reguser_lbl = Label(
-    registerpage, text="Username: ",  font=("Cascadia Mono SemiBold",12), background="khaki")
+    registerpage, text="Username:",  font=("Cascadia Mono SemiBold",12), background="khaki")
 reguser_lbl.place(x=60,y=225)
 
 reguser_entry = Entry(
@@ -308,13 +336,24 @@ regpass_entry2.insert(0, "Confirm Password...")
 regpass_entry2.bind("<FocusIn>", regpasswordClick2)
 regpass_entry2.bind("<FocusOut>", regpasswordDefault2)
 
+pin_label = Label(
+    registerpage, text="Pin:", font=("Cascadia Mono SemiBold", 12), background="khaki")
+pin_label.place(x=60, y=390)
+
+pin_entry = Entry(
+    registerpage, width=25, bg="dark khaki", relief=tk.FLAT)
+pin_entry.place(x=123, y=396)
+pin_entry.insert(0,"Enter Pin...")
+pin_entry.bind("<FocusIn>", pinClick)
+pin_entry.bind("<FocusOut>", pinDefault)
+
 back2 = menuButton(
     registerpage, text="Back", width=13, height=1, command=menupage.tkraise)
-back2.place(x=65,y=395)
+back2.place(x=65,y=445)
 
 register = menuButton(
     registerpage, text="Register", width=13, height=1, command=registerUser)
-register.place(x=240,y=395)
+register.place(x=240,y=445)
 
 feedback_lbl2 = Label(
     registerpage, text="", font=("Cascadia Mono SemiBold",9), background="khaki")

@@ -78,7 +78,7 @@ class Gameplay:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         if self.pause:
             menu_frame = MenuFrame(self, 0, 0)
-            self.screen.blit(menu_frame.image, (0,0))
+            self.screen.blit(menu_frame.image, (700,100))
         self.clock.tick(FPS)
         pygame.display.flip()
 
