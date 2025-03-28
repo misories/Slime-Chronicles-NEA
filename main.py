@@ -4,8 +4,6 @@ from requests.utils import select_proxy
 from sprites import *
 from config import *
 import sys
-from groups import *
-
 
 class Gameplay:
     def __init__(self):

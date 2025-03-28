@@ -278,10 +278,6 @@ class MenuFrame:
         self.load = pygame.image.load
         self._layer = P_layer
 
-        self.x = x * pixels
-        self.y = y * pixels
-
-
         self.frame = self.load("Pics/slab.png").convert_alpha()
         self.image = pygame.Surface([422, 783])
         self.frame = pygame.transform.scale(self.frame, (211,391))
@@ -294,7 +290,35 @@ class MenuFrame:
         # Menu Buttons
 
         self.b1 = self.load("Pics/menubtn.png").convert_alpha()
-        self.bimg1 = pygame.Surface([780,228])
-        self.b1 = pygame.transform.scale(self.b1, (195, 57))
+        self.bimg1 = pygame.Surface([743,315])
+        self.b1 = pygame.transform.scale(self.b1, (165, 57))
         self.image.set_colorkey(BLACK, pygame.RLEACCEL)
-        self.image.blit(self.b1, (7,20))
+        self.image.blit(self.b1, (22,80))
+
+        y_pos = 94
+        self.selecting = 1
+
+        self.select = self.load("Pics/Sprite/selecton.png")
+        self.selectimg = pygame.Surface([368, 390])
+        self.select = pygame.transform.scale(self.select, (32, 32))
+        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
+        self.image.blit(self.select, (34, y_pos))
+
+        self.b1 = self.load("Pics/menubtn.png").convert_alpha()
+        self.bimg1 = pygame.Surface([743,315])
+        self.b1 = pygame.transform.scale(self.b1, (165, 57))
+        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
+        self.image.blit(self.b1, (22,150))
+
+        def moveCursor():
+            key = pygame.key.get_pressed()
+            if key[pygame.K_s] or key[pygame.K_DOWN]:
+                y_pos = y_pos + 70
+                self.selecting = + 1
+                if y_pos >= 164:
+                    y_pos = 164
+            if key[pygame.K_w] or key[pygame.K_UP]:
+                y_pos = y_pos - 70
+                self.selecting = self.selecting - 1
+                if y_pos <= 94:
+                    y_pos = 94
