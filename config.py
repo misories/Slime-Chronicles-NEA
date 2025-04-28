@@ -1,5 +1,3 @@
-import pygame.event
-
 w = 960
 h = 640
 

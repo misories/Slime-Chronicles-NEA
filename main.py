@@ -1,3 +1,5 @@
+import math
+
 import pygame.mixer
 from requests.utils import select_proxy
 
@@ -22,6 +24,9 @@ class Gameplay:
         self.camera = None
         self.show_dialogue = False
         self.dialogue_text = ""
+        self.choice_list = []
+        self.selected_index = 0
+        self.showing_choices = False
 
         self.pause = False
 
@@ -49,6 +54,12 @@ class Gameplay:
         self.createwallmap()
         print(f"player: {self.player.rect.x}, {self.player.rect.y}")
 
+    def interact_R(self, player, npc, radius=75):
+        dx = player.rect.centerx - npc.rect.centerx
+        dy = player.rect.centery - npc.rect.centery
+        distance = math.hypot(dx, dy)
+        return distance <= radius
+
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -61,9 +72,22 @@ class Gameplay:
                         self.npc.interact()
                 if event.key == pygame.K_e:
                     pass
-                if self.show_dialogue and event.key == pygame.K_SPACE:
-                    self.show_dialogue = False
 
+            if self.show_dialogue:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        self.show_dialogue = False
+
+            if self.showing_choices:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        self.selected_index = (self.selected_index + 1) % len(self.choice_list)
+                    if event.key == pygame.K_UP:
+                        self.selected_index = (self.selected_index - 1) % len(self.choice_list)
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
+                        _, func = self.choice_list[self.selected_index]
+                        func()
+                        self.showing_choices = False
 
     def update(self):
         self.all_sprites.update()
@@ -79,11 +103,30 @@ class Gameplay:
             pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
             pygame.draw.rect(self.screen, WHITE, textbox_rect, 3)
 
-            font = pygame.font.Font("pokefont.ttf", 24)
+            font = pygame.font.Font("pokefont.ttf", 16)
             text_surface = font.render(self.dialogue_text, True, WHITE)
             self.screen.blit(text_surface, (textbox_rect.x + 10, textbox_rect.y + 10))
+
+        if self.showing_choices:
+            textbox_rect = pygame.Rect(50, 500, 860, 120)
+            pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
+            pygame.draw.rect(self.screen, WHITE, textbox_rect, 3)
+
+            font = pygame.font.Font("pokefont.ttf", 16)
+            for idv, (text, func) in enumerate(self.choice_list):
+                colour = WHITE
+                if idx == self.selected_index:
+                    colour = (255, 255, 0)
+
+            text_surface = font.render(self.dialogue_text, True, WHITE)
+            self.screen.blit(text_surface, (textbox_rect.x + 20, textbox_rect.y + 20 + idx * 30))
         self.clock.tick(FPS)
         pygame.display.flip()
+
+    def show_choices(self, choices):
+        self.choice_list = choices
+        self.selected_index = 0
+        self.showing_choices = True
 
     def mainloop(self):
         while self.playing:
@@ -93,10 +136,10 @@ class Gameplay:
 
         self.running = False
 
-    def game_over(self):
+    def intro(self):
         pass
 
-    def intro(self):
+    def battle(self):
         pass
 
     def playmusic(self):
