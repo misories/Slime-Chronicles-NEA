@@ -247,78 +247,15 @@ class NPC(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+        self.name = "Dread #1"
+        font = pygame.font.Font("pokefont.ttf", 12)
+        self.name_surface = font.render(self.name, True, WHITE)
+        self.name_rect = self.name_surface.get_rect(center=(self.rect.centerx, self.rect.top - 10))
+
+    def update(self):
+        self.name_rect.centerx = self.rect.centerx
+        self.name_rect.bottom = self.rect.top - 5
+
     def interact(self):
-        print("jus slime me")
-
-class Camera:
-    def __init__(self, width, height, start_x, start_y):
-        self.camera = pygame.Rect(start_x, start_y, w, h)
-        self.w = width
-        self.h = height
-        self.x = start_x
-        self.y = start_y
-
-    def update(self, player):
-        self.x = -player.rect.centerx + (self.w // 2)
-        self.y = -player.rect.centery + (self.h // 2)
-
-        self.x = max(-(world_w - 960), min(0, self.x))
-        self.y = max(-(world_h - 640), min(0, self.y))
-        self.camera = pygame.Rect(self.x, self.y, self.w, self.h)
-
-    def apply(self, entity):
-        self.camera.topleft = (self.x, self.y)
-        offset_x = -self.camera.topleft[0]
-        offset_y = -self.camera.topleft[1]
-        return entity.rect.move(-offset_x, -offset_y)
-
-class MenuFrame:
-    def __init__(self, game, x, y):
-        self.game = game
-        self.load = pygame.image.load
-        self._layer = P_layer
-
-        self.frame = self.load("Pics/slab.png").convert_alpha()
-        self.image = pygame.Surface([422, 783])
-        self.frame = pygame.transform.scale(self.frame, (211,391))
-
-        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
-        self.image.blit(self.frame, (0,0))
-
-        self.pause = False
-
-        # Menu Buttons
-
-        self.b1 = self.load("Pics/menubtn.png").convert_alpha()
-        self.bimg1 = pygame.Surface([743,315])
-        self.b1 = pygame.transform.scale(self.b1, (165, 57))
-        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
-        self.image.blit(self.b1, (22,80))
-
-        y_pos = 94
-        self.selecting = 1
-
-        self.select = self.load("Pics/Sprite/selecton.png")
-        self.selectimg = pygame.Surface([368, 390])
-        self.select = pygame.transform.scale(self.select, (32, 32))
-        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
-        self.image.blit(self.select, (34, y_pos))
-
-        self.b1 = self.load("Pics/menubtn.png").convert_alpha()
-        self.bimg1 = pygame.Surface([743,315])
-        self.b1 = pygame.transform.scale(self.b1, (165, 57))
-        self.image.set_colorkey(BLACK, pygame.RLEACCEL)
-        self.image.blit(self.b1, (22,150))
-
-        def moveCursor():
-            key = pygame.key.get_pressed()
-            if key[pygame.K_s] or key[pygame.K_DOWN]:
-                y_pos = y_pos + 70
-                self.selecting = + 1
-                if y_pos >= 164:
-                    y_pos = 164
-            if key[pygame.K_w] or key[pygame.K_UP]:
-                y_pos = y_pos - 70
-                self.selecting = self.selecting - 1
-                if y_pos <= 94:
-                    y_pos = 94
+        self.game.show_dialogue = True
+        self.game.dialogue_text = "insert fight scene"

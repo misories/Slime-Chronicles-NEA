@@ -20,6 +20,8 @@ class Gameplay:
         self.player = None
         self.npc = None
         self.camera = None
+        self.show_dialogue = False
+        self.dialogue_text = ""
 
         self.pause = False
 
@@ -46,7 +48,6 @@ class Gameplay:
 
         self.createwallmap()
         print(f"player: {self.player.rect.x}, {self.player.rect.y}")
-        self.camera = Camera(world_w, world_h, self.player.rect.x, self.player.rect.y)
 
     def events(self):
         for event in pygame.event.get():
@@ -55,33 +56,32 @@ class Gameplay:
                 self.running = False
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.pause = not self.pause
-                    print("pressed")
-                    if self.pause:
-                        print("T")
-                        if event.key == pygame.K_e:
-                            pass
-                    if not self.pause:
-                        print("F")
-                        if event.key == pygame.K_e:
-                            if self.player.rect.colliderect(self.npc.rect):
-                                self.npc.interact()
-                        if event.key == pygame.K_e:
-                            pass
+                if event.key == pygame.K_e:
+                    if self.player.rect.colliderect(self.npc.rect):
+                        self.npc.interact()
+                if event.key == pygame.K_e:
+                    pass
+                if self.show_dialogue and event.key == pygame.K_SPACE:
+                    self.show_dialogue = False
 
 
     def update(self):
         self.all_sprites.update()
-        self.camera.update(self.player)
 
     def draw(self):
         self.screen.fill(BLACK)
+        self.all_sprites.draw(self.screen)
         for sprite in self.all_sprites:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
-        if self.pause:
-            menu_frame = MenuFrame(self, 0, 0)
-            self.screen.blit(menu_frame.image, (700,100))
+            if isinstance(sprite, NPC):
+                self.screen.blit(sprite.name_surface, sprite.name_rect)
+        if self.show_dialogue:
+            textbox_rect = pygame.Rect(50, 500, 860, 120)
+            pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
+            pygame.draw.rect(self.screen, WHITE, textbox_rect, 3)
+
+            font = pygame.font.Font("pokefont.ttf", 24)
+            text_surface = font.render(self.dialogue_text, True, WHITE)
+            self.screen.blit(text_surface, (textbox_rect.x + 10, textbox_rect.y + 10))
         self.clock.tick(FPS)
         pygame.display.flip()
 
