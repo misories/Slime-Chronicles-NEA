@@ -223,10 +223,11 @@ class Spritesheet:
 
 class NPC(pygame.sprite.Sprite):
     def __init__(self,game, x, y):
-        super().__init__(game.all_sprites)
+        super().__init__(game.npcs, game.all_sprites)
 
         self.game = game
         self._layer = P_layer
+        self.groups = self.game.npcs
         self.groups = self.game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -257,5 +258,7 @@ class NPC(pygame.sprite.Sprite):
         self.name_rect.bottom = self.rect.top - 5
 
     def interact(self):
-        self.game.show_dialogue = True
-        self.game.dialogue_text = "insert fight scene"
+        self.game.show_choices([
+            ("Fight", self.game.battle),
+            ("Leave", self.game.end_convo)
+        ])

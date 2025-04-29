@@ -7,6 +7,13 @@ from sprites import *
 from config import *
 import sys
 
+
+def interact_R(player, npc, radius=75):
+    dx = player.rect.centerx - npc.rect.centerx
+    dy = player.rect.centery - npc.rect.centery
+    distance = math.hypot(dx, dy)
+    return distance <= radius
+
 class Gameplay:
     def __init__(self):
         pygame.init()
@@ -18,12 +25,14 @@ class Gameplay:
         self.playing = False
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.npcs = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.player = None
         self.npc = None
         self.camera = None
         self.show_dialogue = False
         self.dialogue_text = ""
+        self.dialogue_index = 0
         self.choice_list = []
         self.selected_index = 0
         self.showing_choices = False
@@ -54,12 +63,6 @@ class Gameplay:
         self.createwallmap()
         print(f"player: {self.player.rect.x}, {self.player.rect.y}")
 
-    def interact_R(self, player, npc, radius=75):
-        dx = player.rect.centerx - npc.rect.centerx
-        dy = player.rect.centery - npc.rect.centery
-        distance = math.hypot(dx, dy)
-        return distance <= radius
-
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -68,10 +71,10 @@ class Gameplay:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
-                    if self.player.rect.colliderect(self.npc.rect):
-                        self.npc.interact()
-                if event.key == pygame.K_e:
-                    pass
+                    for npc in self.npcs:
+                        if interact_R(self.player, npc):
+                            npc.interact()
+                            break
 
             if self.show_dialogue:
                 if event.type == pygame.KEYDOWN:
@@ -101,7 +104,7 @@ class Gameplay:
         if self.show_dialogue:
             textbox_rect = pygame.Rect(50, 500, 860, 120)
             pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
-            pygame.draw.rect(self.screen, WHITE, textbox_rect, 3)
+            pygame.draw.rect(self.screen, WHITE, textbox_rect, 2)
 
             font = pygame.font.Font("pokefont.ttf", 16)
             text_surface = font.render(self.dialogue_text, True, WHITE)
@@ -110,10 +113,10 @@ class Gameplay:
         if self.showing_choices:
             textbox_rect = pygame.Rect(50, 500, 860, 120)
             pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
-            pygame.draw.rect(self.screen, WHITE, textbox_rect, 3)
+            pygame.draw.rect(self.screen, WHITE, textbox_rect, 2)
 
             font = pygame.font.Font("pokefont.ttf", 16)
-            for idv, (text, func) in enumerate(self.choice_list):
+            for idx, (text, func) in enumerate(self.choice_list):
                 colour = WHITE
                 if idx == self.selected_index:
                     colour = (255, 255, 0)
@@ -127,6 +130,12 @@ class Gameplay:
         self.choice_list = choices
         self.selected_index = 0
         self.showing_choices = True
+
+    def end_convo(self):
+        self.dialogue_text = ["'And stay down...' he mumbled."]
+        self.dialogue_index = 0
+        self.show_dialogue = True
+        self.showing_choices = False
 
     def mainloop(self):
         while self.playing:
