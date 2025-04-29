@@ -68,9 +68,10 @@ class Player(pygame.sprite.Sprite):
         self.down3 = pygame.transform.scale(self.down3, (28, 28))
 
     def checkForStop(self):
-        key_press = pygame.key.get_pressed()
-        if key_press[pygame.K_ESCAPE]:
-            self.stop = not self.stop
+        if self.game.show_dialogue:
+            self.stop = True
+        else:
+            self.stop = False
     def update(self):
         self.checkForStop()
         if not self.stop:
@@ -248,7 +249,7 @@ class NPC(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.name = "Dread #1"
+        self.name = "Von Dread #1"
         font = pygame.font.Font("pokefont.ttf", 12)
         self.name_surface = font.render(self.name, True, WHITE)
         self.name_rect = self.name_surface.get_rect(center=(self.rect.centerx, self.rect.top - 10))
@@ -258,7 +259,14 @@ class NPC(pygame.sprite.Sprite):
         self.name_rect.bottom = self.rect.top - 5
 
     def interact(self):
-        self.game.show_choices([
-            ("Fight", self.game.battle),
-            ("Leave", self.game.end_convo)
-        ])
+        self.game.show_dialogue = True
+        self.game.in_choice_mode = True
+        self.game.dialogue_text = "Von's 1st dread.\n Will you face it?"
+        self.game.dialogue_choices = ["Y", "N"]
+        self.game.choice_index = 0
+
+def interact_R(player, npc, radius=75):
+    dx = player.rect.centerx - npc.rect.centerx
+    dy = player.rect.centery - npc.rect.centery
+    distance = math.hypot(dx, dy)
+    return distance <= radius

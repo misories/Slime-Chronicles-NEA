@@ -52,15 +52,4 @@ wallmap = [
 world_w = (100 + 1) * pixels
 world_h = (30 + 1) * pixels
 
-# Resource Values + convertion
-c = 0 # Copper
-s = 0 # Silver
-g = 0 # Gold
-
-if c >= 100:
-    s = s + 1
-    c = c - 100
-
-if s >= 100:
-    g = g + 1
-    s = s - 100
+COPPER = (184, 115, 51)

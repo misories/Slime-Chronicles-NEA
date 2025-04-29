@@ -7,13 +7,6 @@ from sprites import *
 from config import *
 import sys
 
-
-def interact_R(player, npc, radius=75):
-    dx = player.rect.centerx - npc.rect.centerx
-    dy = player.rect.centery - npc.rect.centery
-    distance = math.hypot(dx, dy)
-    return distance <= radius
-
 class Gameplay:
     def __init__(self):
         pygame.init()
@@ -32,10 +25,10 @@ class Gameplay:
         self.camera = None
         self.show_dialogue = False
         self.dialogue_text = ""
-        self.dialogue_index = 0
-        self.choice_list = []
-        self.selected_index = 0
-        self.showing_choices = False
+        self.dialogue_choices = []
+        self.choice_index = 0
+        self.in_choice_mode = False
+
 
         self.pause = False
 
@@ -43,6 +36,8 @@ class Gameplay:
 
         pygame.mixer.init()
         self.music = pygame.mixer.music
+
+        self.battle_run = False
 
     def createwallmap(self):
         for n, row in enumerate(wallmap):
@@ -78,19 +73,25 @@ class Gameplay:
 
             if self.show_dialogue:
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        self.show_dialogue = False
+                    if self.in_choice_mode:
+                        if event.key == pygame.K_UP or event.key == pygame.K_w:
+                            self.choice_index = ((self.choice_index - 1) % len(self.dialogue_choices))
+                        if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                            self.choice_index = ((self.choice_index + 1) % len(self.dialogue_choices))
+                        if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                            self.select_choice()
+                    else:
+                        if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                            self.show_dialogue = False
 
-            if self.showing_choices:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:
-                        self.selected_index = (self.selected_index + 1) % len(self.choice_list)
-                    if event.key == pygame.K_UP:
-                        self.selected_index = (self.selected_index - 1) % len(self.choice_list)
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
-                        _, func = self.choice_list[self.selected_index]
-                        func()
-                        self.showing_choices = False
+    def select_choice(self):
+        selected = self.dialogue_choices[self.choice_index]
+        print(f"You selected: {selected}")
+        if selected == "Y":
+            self.dialogue_text = "Stand ready..."
+        elif selected == "N":
+            self.dialogue_text = "You aren't ready for its arrival.\n Not yet..."
+        self.in_choice_mode = False
 
     def update(self):
         self.all_sprites.update()
@@ -104,38 +105,26 @@ class Gameplay:
         if self.show_dialogue:
             textbox_rect = pygame.Rect(50, 500, 860, 120)
             pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
-            pygame.draw.rect(self.screen, WHITE, textbox_rect, 2)
+            pygame.draw.rect(self.screen, WHITE, textbox_rect, 3)
 
-            font = pygame.font.Font("pokefont.ttf", 16)
-            text_surface = font.render(self.dialogue_text, True, WHITE)
-            self.screen.blit(text_surface, (textbox_rect.x + 10, textbox_rect.y + 10))
+            font = pygame.font.Font("pokefont.ttf", 12)
 
-        if self.showing_choices:
-            textbox_rect = pygame.Rect(50, 500, 860, 120)
-            pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
-            pygame.draw.rect(self.screen, WHITE, textbox_rect, 2)
+            if self.in_choice_mode:
+                question_surface = font.render(self.dialogue_text, True, WHITE)
+                self.screen.blit(question_surface, (textbox_rect.x + 10, textbox_rect.y + 10))
 
-            font = pygame.font.Font("pokefont.ttf", 16)
-            for idx, (text, func) in enumerate(self.choice_list):
-                colour = WHITE
-                if idx == self.selected_index:
-                    colour = (255, 255, 0)
+                for i, choice in enumerate(self.dialogue_choices):
+                    colour = (255, 255, 0) if i == self.choice_index else WHITE
+                    choice_surface = font.render(choice, True, colour)
+                    self.screen.blit(choice_surface, (textbox_rect.x + 20, textbox_rect.y + 40 + i * 30))
+            else:
+                text_surface = font.render(self.dialogue_text, True, WHITE)
+                self.screen.blit(text_surface, (textbox_rect.x + 10, textbox_rect.y + 10))
 
-            text_surface = font.render(self.dialogue_text, True, WHITE)
-            self.screen.blit(text_surface, (textbox_rect.x + 20, textbox_rect.y + 20 + idx * 30))
+        if self.battle_run:
+            self.screen.blit(battleimg, (0,0))
         self.clock.tick(FPS)
         pygame.display.flip()
-
-    def show_choices(self, choices):
-        self.choice_list = choices
-        self.selected_index = 0
-        self.showing_choices = True
-
-    def end_convo(self):
-        self.dialogue_text = ["'And stay down...' he mumbled."]
-        self.dialogue_index = 0
-        self.show_dialogue = True
-        self.showing_choices = False
 
     def mainloop(self):
         while self.playing:
@@ -149,12 +138,25 @@ class Gameplay:
         pass
 
     def battle(self):
+        battleimg = pygame.image.load("Pics/battle.png").convert_alpha()
         pass
+
+
 
     def playmusic(self):
         self.music.load("heart and soul.mp3")
         self.music.play(-1)
         self.music.set_volume(0.5)
+
+class SettingsMenu:
+    def __init__(self):
+        self.font = pygame.font.SysFont(None, 48)
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        pass
 
 g = Gameplay()
 g.intro()
