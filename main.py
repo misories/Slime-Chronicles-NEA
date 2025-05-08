@@ -16,6 +16,7 @@ class Gameplay:
         self.font = pygame.font.Font("pokefont.ttf", 32)
         self.running = True
         self.playing = False
+        self.state = "game"
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.npcs = pygame.sprite.LayeredUpdates()
@@ -29,13 +30,15 @@ class Gameplay:
         self.choice_index = 0
         self.in_choice_mode = False
 
-
         self.pause = False
 
         self.terrain = Spritesheet("Pics/Sprite/terrain.png")
 
         pygame.mixer.init()
         self.music = pygame.mixer.music
+        self.song_list = ["meow.mp3", "heart and soul.mp3"]
+        self.sound = self.song_list[0] #Deafult Song
+        self.v = 0.5 #Deafult Value
 
         self.battle_run = False
 
@@ -65,7 +68,7 @@ class Gameplay:
                 self.running = False
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
+                if event.key == pygame.K_e and self.state == "game":
                     for npc in self.npcs:
                         if interact_R(self.player, npc):
                             npc.interact()
@@ -83,6 +86,12 @@ class Gameplay:
                     else:
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             self.show_dialogue = False
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                if self.state == "game":
+                    self.state = "settings"
+                else:
+                    self.state = "game"
 
     def select_choice(self):
         selected = self.dialogue_choices[self.choice_index]
@@ -123,6 +132,22 @@ class Gameplay:
 
         if self.battle_run:
             self.screen.blit(battleimg, (0,0))
+        if self.state == "game":
+            pass
+        elif self.state == "settings":
+            s.update()
+            s.draw(self.screen)
+            action = s.event()
+            if action == "+1":
+                self.v = self.v + 0.1
+                if self.v > 1:
+                    self.v = 1
+            if action == "-1":
+                self.v = self.v - 0.1
+                if self.v < 0:
+                    self.v = 0
+            self.music.set_volume(self.v)
+            pygame.display.flip()
         self.clock.tick(FPS)
         pygame.display.flip()
 
@@ -144,26 +169,73 @@ class Gameplay:
 
 
     def playmusic(self):
-        self.music.load("heart and soul.mp3")
+        self.music.load("meow.mp3")
         self.music.play(-1)
-        self.music.set_volume(0.5)
+        self.music.set_volume(self.v)
 
 class SettingsMenu:
-    def __init__(self):
-        self.font = pygame.font.SysFont(None, 48)
+    def __init__(self, screen):
+        self.tfont = pygame.font.Font("pokefont.ttf", 39)
+        self.font = pygame.font.Font("pokefont.ttf", 16)
+        self.screen = None
+        self.page = pygame.image.load("Pics/page.png").convert_alpha()
+        self.page = pygame.transform.scale(self.page, (960, 640))
+        self.vol = 5
+
+        self.btn_font = pygame.font.Font("pokefont.ttf", 18)
+        self.rects = pygame.image.load("Pics/rect.png")
+        self.rects = pygame.transform.scale(self.rects, (30,30))
+        self.volbtn1 = Button(image=self.rects, pos=(200, 300), text_input="+", font=self.btn_font, base_color=WHITE, hovering_color=YELLOW)
+        self.volbtn2 = Button(image=self.rects, pos=(100, 300), text_input="-", font=self.btn_font, base_color=WHITE, hovering_color=YELLOW)
+
+        self.rectm = pygame.image.load("Pics/rect.png")
+        self.rectm = pygame.transform.scale(self.rectm, (90,40))
+
 
     def update(self):
-        pass
+        mouse_pos = pygame.mouse.get_pos()
+        self.volbtn1.changeColor(mouse_pos)
+        self.volbtn2.changeColor(mouse_pos)
+        self.sound1.changeColor(mouse_pos)
 
     def draw(self, screen):
-        pass
+        self.screen = screen
+        self.screen.fill(RED)
+        self.screen.blit(self.page, (0,0))
+        title = self.tfont.render("--- Settings ---", True, WHITE)
+        v_txt = self.font.render("Volume", True, WHITE)
+        v = self.font.render(str(self.vol), True, WHITE)
+        s_txt = self.font.render("Sounds", True, WHITE)
+
+        self.screen.blit(v, (140,300))
+        self.screen.blit(v_txt, (100, 260))
+        self.screen.blit(s_txt, (100, 360))
+        self.screen.blit(title, (160,80))
+
+        self.volbtn1.update(self.screen)
+        self.volbtn2.update(self.screen)
+
+    def event(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.volbtn1.checkForInput(pygame.mouse.get_pos()):
+                    self.vol = self.vol + 1
+                    if self.vol > 10:
+                        self.vol = 10
+                    return "+1"
+                if self.volbtn2.checkForInput(pygame.mouse.get_pos()):
+                    self.vol = self.vol - 1
+                    if self.vol < 0:
+                        self.vol = 0
+                    return "-1"
+        return None
 
 g = Gameplay()
+s = SettingsMenu(g.screen)
 g.intro()
 g.new()
 g.playmusic()
 while g.running:
     g.mainloop()
-    g.game_over()
 pygame.quit()
 sys.exit()

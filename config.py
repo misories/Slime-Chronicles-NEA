@@ -1,3 +1,5 @@
+from Tools.scripts.generate_re_casefix import alpha
+
 w = 960
 h = 640
 
@@ -10,6 +12,7 @@ RED = (255,0,0)
 BLACK = (0,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
+YELLOW = (255,255,0)
 WHITE = (255,255,255)
 
 FPS = 60
