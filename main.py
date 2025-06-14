@@ -1,10 +1,10 @@
 import math
 
 import pygame.mixer
-from requests.utils import select_proxy
 
 from sprites import *
 from config import *
+from battle import *
 import sys
 
 class Gameplay:
@@ -20,10 +20,12 @@ class Gameplay:
 
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.npcs = pygame.sprite.LayeredUpdates()
+
         self.blocks = pygame.sprite.LayeredUpdates()
+
         self.player = None
         self.npc = None
-        self.camera = None
+
         self.show_dialogue = False
         self.dialogue_text = ""
         self.dialogue_choices = []
@@ -61,6 +63,14 @@ class Gameplay:
         self.createwallmap()
         print(f"player: {self.player.rect.x}, {self.player.rect.y}")
 
+    def enter_battle(self):
+        self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.npcs = pygame.sprite.LayeredUpdates()
+        self.blocks = pygame.sprite.LayeredUpdates()
+        self.music.load(self.song_list[1])
+        self.music.play(-1)
+        b.battle = True
+
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -90,14 +100,23 @@ class Gameplay:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 if self.state == "game":
                     self.state = "settings"
-                else:
+                    print(self.state)
+                    return self.state
+                if self.state == "settings":
                     self.state = "game"
+                    print(self.state)
+                    return self.state
+                if self.state == "battle":
+                    pass
 
     def select_choice(self):
         selected = self.dialogue_choices[self.choice_index]
         print(f"You selected: {selected}")
         if selected == "Y":
             self.dialogue_text = "Stand ready..."
+            self.enter_battle()
+            self.state = "battle"
+
         elif selected == "N":
             self.dialogue_text = "You aren't ready for its arrival.\n Not yet..."
         self.in_choice_mode = False
@@ -107,36 +126,43 @@ class Gameplay:
 
     def draw(self):
         self.screen.fill(BLACK)
-        self.all_sprites.draw(self.screen)
-        for sprite in self.all_sprites:
-            if isinstance(sprite, NPC):
-                self.screen.blit(sprite.name_surface, sprite.name_rect)
+        if self.state != "battle":
+            self.all_sprites.draw(self.screen)
+            for sprite in self.all_sprites:
+                if isinstance(sprite, NPC):
+                    self.screen.blit(sprite.name_surface, sprite.name_rect)
+                if isinstance(sprite, Player):
+                    self.screen.blit(sprite.name_surface, sprite.name_rect)
+
         if self.show_dialogue:
             textbox_rect = pygame.Rect(50, 500, 860, 120)
-            pygame.draw.rect(self.screen, (50, 50, 50), textbox_rect)
-            pygame.draw.rect(self.screen, WHITE, textbox_rect, 3)
+            pygame.draw.rect(self.screen, WHITE, textbox_rect)
+            pygame.draw.rect(self.screen, BLACK, textbox_rect, 3)
 
             font = pygame.font.Font("pokefont.ttf", 12)
 
             if self.in_choice_mode:
-                question_surface = font.render(self.dialogue_text, True, WHITE)
+                question_surface = font.render(self.dialogue_text, True, BLACK)
                 self.screen.blit(question_surface, (textbox_rect.x + 10, textbox_rect.y + 10))
 
                 for i, choice in enumerate(self.dialogue_choices):
-                    colour = (255, 255, 0) if i == self.choice_index else WHITE
+                    colour = GRAY if i == self.choice_index else BLACK
                     choice_surface = font.render(choice, True, colour)
                     self.screen.blit(choice_surface, (textbox_rect.x + 20, textbox_rect.y + 40 + i * 30))
             else:
-                text_surface = font.render(self.dialogue_text, True, WHITE)
+                text_surface = font.render(self.dialogue_text, True, BLACK)
                 self.screen.blit(text_surface, (textbox_rect.x + 10, textbox_rect.y + 10))
 
-        if self.battle_run:
-            self.screen.blit(battleimg, (0,0))
+        if self.state == "battle":
+            b.handle_events(events = pygame.event.get())
+            b.update()
+            b.draw()
+
         if self.state == "game":
             pass
         elif self.state == "settings":
             s.update()
-            s.draw(self.screen)
+            s.draw()
             action = s.event()
             if action == "+1":
                 self.v = self.v + 0.1
@@ -147,6 +173,12 @@ class Gameplay:
                 if self.v < 0:
                     self.v = 0
             self.music.set_volume(self.v)
+            if action == "0":
+                c = 0
+                self.music.load(self.song_list[c])
+            if action == "1":
+                c = 1
+                self.music.load(self.song_list[c])
             pygame.display.flip()
         self.clock.tick(FPS)
         pygame.display.flip()
@@ -162,14 +194,8 @@ class Gameplay:
     def intro(self):
         pass
 
-    def battle(self):
-        battleimg = pygame.image.load("Pics/battle.png").convert_alpha()
-        pass
-
-
-
     def playmusic(self):
-        self.music.load("meow.mp3")
+        self.music.load(self.song_list[0])
         self.music.play(-1)
         self.music.set_volume(self.v)
 
@@ -177,7 +203,7 @@ class SettingsMenu:
     def __init__(self, screen):
         self.tfont = pygame.font.Font("pokefont.ttf", 39)
         self.font = pygame.font.Font("pokefont.ttf", 16)
-        self.screen = None
+        self.screen = screen
         self.page = pygame.image.load("Pics/page.png").convert_alpha()
         self.page = pygame.transform.scale(self.page, (960, 640))
         self.vol = 5
@@ -185,21 +211,30 @@ class SettingsMenu:
         self.btn_font = pygame.font.Font("pokefont.ttf", 18)
         self.rects = pygame.image.load("Pics/rect.png")
         self.rects = pygame.transform.scale(self.rects, (30,30))
-        self.volbtn1 = Button(image=self.rects, pos=(200, 300), text_input="+", font=self.btn_font, base_color=WHITE, hovering_color=YELLOW)
-        self.volbtn2 = Button(image=self.rects, pos=(100, 300), text_input="-", font=self.btn_font, base_color=WHITE, hovering_color=YELLOW)
+
+        self.volbtn1 = Button(image=self.rects, pos=(200, 300), text_input="+", font=self.btn_font,
+                              base_color=WHITE, hovering_color=YELLOW)
+        self.volbtn2 = Button(image=self.rects, pos=(100, 300), text_input="-", font=self.btn_font,
+                              base_color=WHITE, hovering_color=YELLOW)
 
         self.rectm = pygame.image.load("Pics/rect.png")
         self.rectm = pygame.transform.scale(self.rectm, (90,40))
+
+        self.soundtrack1 = Button(image=self.rectm, pos=(80, 400), text_input="Meow", font=self.btn_font,
+                                  base_color=WHITE,hovering_color=YELLOW)
+        self.soundtrack2 = Button(image=self.rectm, pos=(220, 400), text_input="Heart", font=self.btn_font,
+                                  base_color=WHITE, hovering_color=YELLOW)
 
 
     def update(self):
         mouse_pos = pygame.mouse.get_pos()
         self.volbtn1.changeColor(mouse_pos)
         self.volbtn2.changeColor(mouse_pos)
-        self.sound1.changeColor(mouse_pos)
 
-    def draw(self, screen):
-        self.screen = screen
+        self.soundtrack1.changeColor(mouse_pos)
+        self.soundtrack2.changeColor(mouse_pos)
+
+    def draw(self):
         self.screen.fill(RED)
         self.screen.blit(self.page, (0,0))
         title = self.tfont.render("--- Settings ---", True, WHITE)
@@ -215,6 +250,9 @@ class SettingsMenu:
         self.volbtn1.update(self.screen)
         self.volbtn2.update(self.screen)
 
+        self.soundtrack1.update(self.screen)
+        self.soundtrack2.update(self.screen)
+
     def event(self):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -228,11 +266,15 @@ class SettingsMenu:
                     if self.vol < 0:
                         self.vol = 0
                     return "-1"
+                if self.soundtrack1.checkForInput(pygame.mouse.get_pos()):
+                    return "0"
+                if self.soundtrack2.checkForInput(pygame.mouse.get_pos()):
+                    return "1"
         return None
 
 g = Gameplay()
 s = SettingsMenu(g.screen)
-g.intro()
+b = Battle(g.screen)
 g.new()
 g.playmusic()
 while g.running:

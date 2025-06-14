@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
 		self.groups = self.game.all_sprites
 		self.stop = False
 		pygame.sprite.Sprite.__init__(self, self.groups)
+		self.name = "User"
 
 		# Set Sprite to 32x32
 		self.x = x * pixels
@@ -67,8 +68,13 @@ class Player(pygame.sprite.Sprite):
 		self.down2 = pygame.transform.scale(self.down2, (28, 28))
 		self.down3 = pygame.transform.scale(self.down3, (28, 28))
 
+		# Name
+		font = pygame.font.Font("pokefont.ttf", 12)
+		self.name_surface = font.render(self.name, True, WHITE)
+		self.name_rect = self.name_surface.get_rect(center=(self.rect.centerx, self.rect.top - 10))
+
 	def checkForStop(self):
-		if self.game.show_dialogue or self.game.state == "settings":
+		if self.game.show_dialogue or self.game.state == "settings" or self.game.state == "battle":
 			self.stop = True
 		else:
 			self.stop = False
@@ -88,23 +94,25 @@ class Player(pygame.sprite.Sprite):
 		self.x_change = 0
 		self.y_change = 0
 
-	def movekeys(self):
+		self.name_rect.centerx = self.rect.centerx
+		self.name_rect.bottom = self.rect.top - 5
 
+	def movekeys(self):
 		# Checking Input and Moving
 		key_pressed = pygame.key.get_pressed()
-		if key_pressed[pygame.K_w] or key_pressed[pygame.K_UP]:
+		if key_pressed[pygame.K_w]:
 			self.y_change -= speed
 			self.facing = "up"
 
-		if key_pressed[pygame.K_s] or key_pressed[pygame.K_DOWN]:
+		if key_pressed[pygame.K_s]:
 			self.y_change += speed
 			self.facing = "down"
 
-		if key_pressed[pygame.K_a] or key_pressed[pygame.K_LEFT]:
+		if key_pressed[pygame.K_a]:
 			self.x_change -= speed
 			self.facing = "left"
 
-		if key_pressed[pygame.K_d] or key_pressed[pygame.K_RIGHT]:
+		if key_pressed[pygame.K_d]:
 			self.x_change += speed
 			self.facing = "right"
 
@@ -230,6 +238,7 @@ class NPC(pygame.sprite.Sprite):
 		self._layer = P_layer
 		self.groups = self.game.npcs
 		self.groups = self.game.all_sprites
+		self.type = "nature"
 		pygame.sprite.Sprite.__init__(self, self.groups)
 
 		# Set Sprite to 32x32
