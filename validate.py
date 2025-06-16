@@ -28,11 +28,13 @@ def verifyLog():
         if username_entry.get() == all_accounts[0] and pass_entry.get() == all_accounts[1]:
             logged_account = all_accounts[0]
             feedback_lbl1.config(text="Valid", fg="green")
+            feedback_lbl1.place(x=170, y=210)
             account_lbl.config(text=f"Welcome, {logged_account} !")
             titlepage.tkraise()
             return
     else:
         feedback_lbl1.config(text="Invalid login", fg="firebrick1")
+        feedback_lbl1.place(x=170, y=210)
         return
 
 def registerUser():
@@ -45,59 +47,108 @@ def registerUser():
     pass2 == "Confirm Password..." or pass2.strip() == "" or\
     pass1 == "Enter Password..." or pass1.strip() == "" or\
     pin == "Enter Pin..." or pin.strip() == "":
-        feedback_lbl2.config(text="Please fill in all fields.", fg="firebrick1") # Shows an error on their screen
+        feedback_lbl2.config(text="Please fill in all fields", fg="firebrick1") # Shows an error on their screen
+        feedback_lbl2.place(x=170, y=195)
         return
 
+    # All other checks
     if pass1 != pass2:
-        feedback_lbl2.config(text="Passwords don't match.", fg="firebrick1")
+        feedback_lbl2.config(text="Passwords don't match", fg="firebrick1")
+        feedback_lbl2.place(x=170, y=195)
         return
 
     if len(pass2) < 8 or len(pass2) > 16:
-        feedback_lbl2.config(text="Password must be between 8 and 16 characters.", fg="firebrick1")
+        feedback_lbl2.config(text="Password must be between 8 and 16 characters", fg="firebrick1")
+        feedback_lbl2.place(x=170, y=195)
         return
 
     if len(user) > 15:
         feedback_lbl2.config(text="Username too long; 15 characters limit", fg="firebrick1")
+        feedback_lbl2.place(x=170, y=195)
+        return
 
     if len(str(pin)) < 4 or len(str(pin)) >6:
         feedback_lbl2.config(text="Invalid, Pin MUST be 4-6 digits", fg="firebrick1")
+        feedback_lbl2.place(x=170,y=195)
         return
     try:
         pin = int(pin)
     except ValueError:
         feedback_lbl2.config(text="Invalid Pin, must be 4-6 numerical values", fg="firebrick1")
+        feedback_lbl2.place(x=170, y=195)
         return
 
-    pointer.execute("SELECT * FROM logins WHERE username=?", user)
+    pointer.execute("SELECT * FROM logins WHERE username=?", (user,))
     if pointer.fetchone():
         feedback_lbl2.config(text="Username already exists.", fg="firebrick1")
+        feedback_lbl2.place(x=170, y=195)
         return
 
+    # Add New to database
     pointer.execute("INSERT INTO logins (username, password, pin) VALUES (?, ?, ?)", (user, pass2, pin))
     connect.commit()
+
+    logged_account = user
+    feedback_lbl2.config(text="Registered and Logged In!", fg="green")
+    feedback_lbl2.place(x=170, y=195)
+    account_lbl.config(text=f"Welcome, {logged_account} !")
+    titlepage.tkraise()  # Switch to the title page
+
+    # Bind Entry behaviour
+    reguser_entry.delete(0, 'end')
+    regpass_entry1.delete(0, 'end')
+    regpass_entry2.delete(0, 'end')
+    pin_entry.delete(0, 'end')
+
     reguser_entry.bind("<FocusIn>", usernameClick)
     reguser_entry.bind("<FocusOut>", usernameDefault)
     regpass_entry1.bind("<FocusIn>", regpasswordClick1)
     regpass_entry1.bind("<FocusOut>", regpasswordDefault1)
     regpass_entry2.bind("<FocusIn>", regpasswordClick2)
     regpass_entry2.bind("<FocusOut>", regpasswordDefault2)
-    loginpage.tkraise()
 
 def authenticate():
-    user = username_entry.get()
+    user = username_entry1.get()
     pin = pin_entry1.get()
+    print(user)
+    # Validate input
+    if user.strip() == "" or user == "Enter Username..." or pin.strip() == "" or pin == "Enter Pin...":
+        feedback_lbl3.config(text="Please enter username and pin", fg="firebrick1")
+        return
+
+    # Check if user exists
     pointer.execute("SELECT * FROM logins WHERE username=?", (user,))
-    if pointer.fetchone():
-        pointer.execute(f"SELECT * FROM logins WHERE username=? AND pin=?", (user,pin))
+    user_match = pointer.fetchone()
+
+    if user_match:
+        pointer.execute("SELECT * FROM logins WHERE username=? AND pin=?", (user, pin))
         match = pointer.fetchone()
+
         if match:
             pass_lbl1.place(x=60, y=335)
-            pass_entry1.place(x=170,y=341)
+            pass_entry1.place(x=190, y=341)
             changePass(user)
+            return
+        else:
+            feedback_lbl3.config(text="Pin does not match username", fg="firebrick1")
+            return
+    else:
+        feedback_lbl3.config(text="User not found", fg="firebrick1")
+        return
+
 
 def changePass(username):
     new_pass = pass_entry1.get()
     user = username
+    if new_pass.strip() == "" or new_pass == "Enter New Pass...":
+        feedback_lbl3.config(text="Please enter a new password", fg="firebrick1")
+        feedback_lbl3.place(x=170, y=210)
+        return
+
+    if len(new_pass) < 8 or len(new_pass) > 16:
+        feedback_lbl3.config(text="Password must be between 8 and 16 characters", fg="firebrick1")
+        feedback_lbl3.place(x=170, y=210)
+        return
     pointer.execute("UPDATE logins SET password=? WHERE username=?", (new_pass, user))
     connect.commit()
     loginpage.tkraise()
@@ -110,7 +161,7 @@ def logOut():
 # Initialise Main Window
 root = tk.Tk()
 root.geometry("960x520")
-root.resizable = False
+root.resizable(False, False)
 root.title("Slime Chronicles")
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
@@ -125,7 +176,7 @@ verifypage = Frame(root, background="khaki")
 frames = [menupage, loginpage, registerpage, titlepage, verifypage] # For easy grid plotting
 
 # Background + Setting the frames
-image = PhotoImage(file= "Pics/background.png") # Image
+image = PhotoImage(file="Pics/background.png") # Image
 for frame in frames:
     frame.grid(row=0, column=0, sticky='nsew')
     bg_lbl = Label(frame, image=image)  # Placing Image in specific frame
@@ -226,16 +277,20 @@ def usernameDefault1(event):
     if username_entry1.get() == "":
         username_entry1.insert(0, "Enter Username...")
 
+def passwordClick1(event):
+    if pass_entry1.get() == "Enter New Pass...":
+        pass_entry1.delete(0, tk.END)
+        pass_entry1.config(show="")
+
+def passwordDefault1(event):
+    if pass_entry1.get() == "":
+        pass_entry1.insert(0, "Enter New Pass...")
+        pass_entry1.config(show="")
+
 # Adding Text / Buttons For Menu Page
 gname1 = Label(
     menupage, text="Slime Chronicles", font=("Cascadia Mono SemiBold",19), background="khaki2")
 gname1.place(x=40,y=250)
-
-menuimage = PhotoImage(file="Pics/btnbg.png")
-menubg = Label(
-    menupage, image= menuimage)
-menuimage.zoom((200/352), 400)
-menubg.place(x=50,y=300)
 
 mbtn1 = menuButton(
     menupage, text="Login", width=13, height=1, command=loginpage.tkraise)
@@ -319,7 +374,6 @@ forgot.place(x=170, y=350)
 
 feedback_lbl1 = Label(
     loginpage, text="", font=("Cascadia Mono SemiBold",9), background="khaki") # To show errors for Inputs
-feedback_lbl1.place(x=170,y=210)
 
 # Verify Page
 verifytitle = Label(
@@ -357,11 +411,16 @@ confirm = menuButton(
 confirm.place(x=240,y=390)
 
 pass_lbl1 = Label(
-    verifypage, text="NewPassword:", font=("Cascadia Mono SemiBold", 12), background="khaki")
+    verifypage, text="New Password:", font=("Cascadia Mono SemiBold", 12), background="khaki")
 
 pass_entry1 = Entry(
     verifypage, width=25, bg="dark khaki", relief=tk.FLAT)  # Confirm Password
+pass_entry1.insert(0,"Enter New Pass...")
+pass_entry1.bind("<FocusIn>", passwordClick1)
+pass_entry1.bind("<FocusOut>", passwordDefault1)
 
+feedback_lbl3 = Label(
+    verifypage, text="", font=("Cascadia Mono SemiBold",9), background="khaki") # To show errors for Inputs
 
 
 # Register Screen
@@ -423,7 +482,6 @@ register.place(x=240,y=445)
 
 feedback_lbl2 = Label(
     registerpage, text="", font=("Cascadia Mono SemiBold",9), background="khaki") # To show errors for Inputs
-feedback_lbl2.place(x=170,y=195)
 
 # Displaying the screen
 menupage.tkraise()
