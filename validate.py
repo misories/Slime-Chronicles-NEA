@@ -74,7 +74,7 @@ def registerUser():
     try:
         pin = int(pin)
     except ValueError:
-        feedback_lbl2.config(text="Invalid Pin, must be 4-6 numerical values", fg="firebrick1")
+        feedback_lbl2.config(text="Invalid Pin, must be Integers", fg="firebrick1")
         feedback_lbl2.place(x=170, y=195)
         return
 
